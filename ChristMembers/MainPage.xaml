@@ -24,6 +24,30 @@
 
             <Entry Placeholder="Nome" Text="{Binding Nome, Mode=TwoWay}" />
             <Entry Placeholder="Telefone" Text="{Binding Telefone, Mode=TwoWay}"/>
+            <!--Entry x:Name="txtCPF" Placeholder="CPF" />
+            <Entry x:Name="dtDataNascimento" Placeholder="Data de nascimento" />
+            <Entry x:Name="txtEmail" Placeholder="Email" />
+            <Entry x:Name="txtCEP" Placeholder="Cep" />
+            <Entry x:Name="txtEndereco" Placeholder="Endereço" />
+            <Entry x:Name="txtNumero" Placeholder="Numero" />
+            <Entry x:Name="txtComplemento" Placeholder="Complemento" />
+            <Entry x:Name="txtBairro" Placeholder="Bairro" />
+            <Entry x:Name="txtCidade" Placeholder="Cidade" />
+            <Entry x:Name="txtEstado" Placeholder="Estado" />
+            <Entry x:Name="dtDataEntrada" Placeholder="DataEntrada" />
+            <HorizontalStackLayout Spacing="16" VerticalOptions="Center">
+                <Label Text="Foi batizado?" 
+                       FontAttributes="Bold" 
+                       Margin="0,6,0,0"/>
+                <RadioButton x:Name="radSim" Content="Sim" 
+                             GroupName="BatizadoGroup" 
+                             VerticalOptions="Center"/>
+                <RadioButton x:Name="radNao" Content="Não" 
+                             GroupName="BatizadoGroup" 
+                             VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+            <Entry x:Name="txtObservacao" Placeholder="Observacoes" /-->
+
             <Button Text="Cadastrar" Command="{Binding CadastrarCommand}"/>
             
             <Label Text="Membros cadastrados" FontSize="20" Margin="0,20,0,0" />
