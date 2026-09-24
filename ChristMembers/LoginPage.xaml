@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.LoginPage">
+    <VerticalStackLayout
+       Padding="30,0"
+       Spacing="25">
+
+        <Image
+            Source="dotnet_bot.png"
+            HeightRequest="185"/>
+
+        <Label
+            Text="IADA"
+            FontSize="40"
+            Style="{StaticResource Headline}"
+            SemanticProperties.HeadingLevel="Level1" />
+
+        <Entry x:Name="Usuario" Placeholder="Usuario"/>
+        <Entry x:Name="Senha" Placeholder="Senha" />
+
+        <HorizontalStackLayout Spacing="16"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center">
+            <Button Text="Entrar" VerticalOptions ="Center"/>
+            <Button Text="Limpar" VerticalOptions ="Center" Clicked="ClearClicked"/>
+            
+        </HorizontalStackLayout>
+
+
+    </VerticalStackLayout>
+</ContentPage>
