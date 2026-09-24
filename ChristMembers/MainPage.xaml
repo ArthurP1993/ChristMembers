@@ -22,18 +22,14 @@
                    FontSize="20"
                    HorizontalOptions="Center" />
 
-            <Entry x:Name="txtNome" Placeholder="Nome" />
-            <Entry x:Name="txtTelefone" Placeholder="Telefone" />
-
-            <Button Clicked="BtnCadastrar_Clicked" Text="Cadastrar" />
-
-            <Label
-    Text="Membros cadastrados"
-    FontSize="20"
-    Margin="0,20,0,0" />
+            <Entry Placeholder="Nome" Text="{Binding Nome, Mode=TwoWay}" />
+            <Entry Placeholder="Telefone" Text="{Binding Telefone, Mode=TwoWay}"/>
+            <Button Text="Cadastrar" Command="{Binding CadastrarCommand}"/>
+            
+            <Label Text="Membros cadastrados" FontSize="20" Margin="0,20,0,0" />
 
             <CollectionView
-    x:Name="ListaMembros">
+                ItemsSource="{Binding Membros}">
 
                 <CollectionView.ItemTemplate>
 

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ChristMembers.Data;
+using ChristMembers.Services;
+using ChristMembers.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace ChristMembers
 {
@@ -18,7 +21,9 @@ namespace ChristMembers
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<MembroService>();
+            builder.Services.AddTransient<MembrosViewModel>();
+            builder.Services.AddSingleton<BancoDados>();
             return builder.Build();
         }
     }

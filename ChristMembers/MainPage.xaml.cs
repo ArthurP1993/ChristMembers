@@ -1,34 +1,24 @@
-﻿using ChristMembers.Models;
-using System.Collections.ObjectModel;
+﻿using ChristMembers.ViewModels;
 
 namespace ChristMembers;
 
 public partial class MainPage : ContentPage
 {
-    private ObservableCollection<Membro> _membros = new ObservableCollection<Membro>();
+    private readonly MembrosViewModel _viewModel;
 
-    public MainPage()
+    public MainPage(MembrosViewModel viewModel)
     {
         InitializeComponent();
 
-        ListaMembros.ItemsSource = _membros;
+        _viewModel = viewModel;
+
+        BindingContext = _viewModel;
     }
 
-    private void BtnCadastrar_Clicked(object sender, EventArgs e)
+    protected override async void OnAppearing()
     {
-        Membro membro = new Membro();
+        base.OnAppearing();
 
-        membro.Nome = txtNome.Text;
-        membro.Telefone = txtTelefone.Text;
-
-        _membros.Add(membro);
-
-        ClearFields();
-    }
-
-    private void ClearFields()
-    {
-        txtNome.Text = string.Empty;
-        txtTelefone.Text = string.Empty;
+        await _viewModel.Inicializar();
     }
 }
