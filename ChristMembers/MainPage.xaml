@@ -26,9 +26,39 @@
             <Entry x:Name="txtTelefone" Placeholder="Telefone" />
 
             <Button Clicked="BtnCadastrar_Clicked" Text="Cadastrar" />
-            
-            
-            
+
+            <Label
+    Text="Membros cadastrados"
+    FontSize="20"
+    Margin="0,20,0,0" />
+
+            <CollectionView
+    x:Name="ListaMembros">
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <VerticalStackLayout
+                Padding="10"
+                Spacing="5">
+
+                            <Label
+                    Text="{Binding Nome}"
+                    FontSize="18" />
+
+                            <Label
+                    Text="{Binding Telefone}"
+                    FontSize="14" />
+
+                        </VerticalStackLayout>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 

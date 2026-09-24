@@ -1,38 +1,34 @@
 ﻿using ChristMembers.Models;
+using System.Collections.ObjectModel;
 
-namespace ChristMembers
+namespace ChristMembers;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    private ObservableCollection<Membro> _membros = new ObservableCollection<Membro>();
+
+    public MainPage()
     {
-        private List<Membro> _membros = new List<Membro>();
+        InitializeComponent();
 
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+        ListaMembros.ItemsSource = _membros;
+    }
 
-        private void BtnCadastrar_Clicked(object sender, EventArgs e)
-        {
-            Membro membro = new Membro();
+    private void BtnCadastrar_Clicked(object sender, EventArgs e)
+    {
+        Membro membro = new Membro();
 
-            membro.Nome = txtNome.Text;
-            membro.Telefone = txtTelefone.Text;
+        membro.Nome = txtNome.Text;
+        membro.Telefone = txtTelefone.Text;
 
-            _membros.Add(membro);
+        _membros.Add(membro);
 
-            //ListaMembros.ItemsSource = null;
-            //ListaMembros.ItemsSource = _membros;
+        ClearFields();
+    }
 
-            txtNome.Text = string.Empty;
-            txtTelefone.Text = string.Empty;
-
-            ClearFields();
-        }
-
-        private void ClearFields()
-        {
-            txtNome.Text = string.Empty;
-            txtTelefone.Text = string.Empty;
-        }
+    private void ClearFields()
+    {
+        txtNome.Text = string.Empty;
+        txtTelefone.Text = string.Empty;
     }
 }

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ChristMembers.Models;
 
-namespace ChristMembers.Models
+public class Membro
 {
-    public class Membro
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Nome { get; set; }
+    public string Nome { get; set; }
 
-        public string Telefone { get; set; }
-    }
+    public string Telefone { get; set; }
 }
