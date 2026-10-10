@@ -2,23 +2,16 @@
 
 namespace ChristMembers;
 
-public partial class MainPage : ContentPage
+public partial class CadastroMembro : ContentPage
 {
     private readonly MembrosViewModel _viewModel;
 
-    public MainPage(MembrosViewModel viewModel)
+    public CadastroMembro(MembrosViewModel viewModel)
     {
         InitializeComponent();
 
         _viewModel = viewModel;
 
         BindingContext = _viewModel;
-    }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-
-        await _viewModel.Inicializar();
     }
 }

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.PainelAdmin"
+             Title="Painel"
+             BackgroundColor="#F4F6FB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,32,24,60" Spacing="20">
+
+            <VerticalStackLayout Spacing="8" Margin="0,0,0,8">
+                <Label Text="Painel do administrador"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="30"
+                       TextColor="#1B2559"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="Escolha o que deseja gerenciar."
+                       FontSize="16"
+                       TextColor="#6B7390" />
+            </VerticalStackLayout>
+
+            <!-- Membros -->
+            <Grid>
+                <Border StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                        <Border Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#E4EBFF"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                            <Label Text="👥"
+                                   FontSize="28"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Membros"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="20"
+                                   TextColor="#1B2559" />
+                            <Label Text="Ver os membros cadastrados"
+                                   FontSize="14"
+                                   TextColor="#6B7390" />
+                        </VerticalStackLayout>
+
+                        <Label Grid.Column="2"
+                               Text="›"
+                               FontSize="34"
+                               TextColor="#9AA1BC"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Button BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Membros"
+                        Clicked="OnMembrosClicked" />
+            </Grid>
+
+            <!-- Visitantes -->
+            <Grid>
+                <Border StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                        <Border Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#FFF0CC"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                            <Label Text="🙋"
+                                   FontSize="28"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Visitantes"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="20"
+                                   TextColor="#1B2559" />
+                            <Label Text="Ver os visitantes cadastrados"
+                                   FontSize="14"
+                                   TextColor="#6B7390" />
+                        </VerticalStackLayout>
+
+                        <Label Grid.Column="2"
+                               Text="›"
+                               FontSize="34"
+                               TextColor="#9AA1BC"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Button BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Visitantes"
+                        Clicked="OnVisitantesClicked" />
+            </Grid>
+
+            <!-- Novidades -->
+            <Grid>
+                <Border StrokeShape="RoundRectangle 24"
+            Stroke="#E4E8F4"
+            StrokeThickness="1"
+            BackgroundColor="White"
+            Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                        <Border Grid.Column="0"
+                    StrokeShape="Ellipse"
+                    StrokeThickness="0"
+                    BackgroundColor="#EEE6FF"
+                    WidthRequest="60"
+                    HeightRequest="60">
+                            <Label Text="📣"
+                       FontSize="28"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="Novidades"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="20"
+                       TextColor="#1B2559" />
+                            <Label Text="Publicar e acompanhar avisos"
+                       FontSize="14"
+                       TextColor="#6B7390" />
+                        </VerticalStackLayout>
+
+                        <Label Grid.Column="2"
+                   Text="›"
+                   FontSize="34"
+                   TextColor="#9AA1BC"
+                   VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Button BackgroundColor="Transparent"
+            CornerRadius="24"
+            SemanticProperties.Description="Novidades"
+            Clicked="OnNovidadesClicked" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

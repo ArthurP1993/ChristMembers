@@ -7,21 +7,23 @@ public partial class HomePage : ContentPage
         InitializeComponent();
     }
 
-    private async void SignUpClicked(object sender, EventArgs e)
+    private async void OnCadastrarClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(MainPage));
+        await Shell.Current.GoToAsync(nameof(CadastroMembro));
     }
 
-    private async void OnMembrosClicked(object sender, EventArgs e)
+    private async void OnLoginMembrosClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(LoginPage));
     }
 
-    private async void OnVisitantesClicked(object sender, EventArgs e)
+    private async void OnNovidadesClicked(object sender, EventArgs e)
     {
-        await DisplayAlert(
-            "Visitantes",
-            "Vamos criar essa página no próximo passo.",
-            "OK");
+        await Shell.Current.GoToAsync(nameof(NovidadesPage));
+    }
+
+    private async void OnVisitanteClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(CadastroVisitante));
     }
 }

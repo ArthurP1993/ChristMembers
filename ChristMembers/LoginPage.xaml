@@ -1,32 +1,78 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ChristMembers.LoginPage">
-    <VerticalStackLayout
-       Padding="30,0"
-       Spacing="25">
+             x:Class="ChristMembers.LoginPage"
+             Title="Acesso de membros"
+             BackgroundColor="#F4F6FB">
 
-        <Image
-            Source="dotnet_bot.png"
-            HeightRequest="185"/>
+    <ScrollView>
+        <VerticalStackLayout Padding="24,32,24,60" Spacing="20">
 
-        <Label
-            Text="IADA"
-            FontSize="40"
-            Style="{StaticResource Headline}"
-            SemanticProperties.HeadingLevel="Level1" />
+            <VerticalStackLayout Spacing="8">
+                <Label x:Name="Titulo"
+                       Text="Acesso de membros"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="30"
+                       TextColor="#1B2559"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label x:Name="Subtitulo"
+                       Text="Entre com o seu usuário e senha."
+                       FontSize="16"
+                       TextColor="#6B7390" />
+            </VerticalStackLayout>
 
-        <Entry x:Name="Usuario" Placeholder="Usuario"/>
-        <Entry x:Name="Senha" Placeholder="Senha" />
+            <Border StrokeShape="RoundRectangle 24"
+                    Stroke="#E4E8F4"
+                    StrokeThickness="1"
+                    BackgroundColor="White"
+                    Padding="20">
 
-        <HorizontalStackLayout Spacing="16"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center">
-            <Button Text="Entrar" VerticalOptions ="Center"/>
-            <Button Text="Limpar" VerticalOptions ="Center" Clicked="ClearClicked"/>
-            
-        </HorizontalStackLayout>
+                <VerticalStackLayout Spacing="14">
 
+                    <Entry x:Name="Usuario"
+                           Placeholder="Usuário"
+                           TextColor="#1B2559"
+                           PlaceholderColor="#9AA1BC"
+                           IsSpellCheckEnabled="False" />
 
-    </VerticalStackLayout>
+                    <Entry x:Name="Senha"
+                           Placeholder="Senha"
+                           IsPassword="True"
+                           TextColor="#1B2559"
+                           PlaceholderColor="#9AA1BC" />
+
+                    <Entry x:Name="ConfirmarSenha"
+                           Placeholder="Confirmar senha"
+                           IsPassword="True"
+                           IsVisible="False"
+                           TextColor="#1B2559"
+                           PlaceholderColor="#9AA1BC" />
+
+                    <Label x:Name="Mensagem"
+                           TextColor="#C62828"
+                           FontSize="14"
+                           IsVisible="False" />
+
+                    <Button x:Name="BotaoEntrar"
+                            Text="Entrar"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="17"
+                            TextColor="White"
+                            BackgroundColor="#1B2F7A"
+                            CornerRadius="16"
+                            HeightRequest="52"
+                            Clicked="OnEntrarClicked" />
+
+                    <Button Text="Limpar"
+                            FontSize="14"
+                            TextColor="#6B7390"
+                            BackgroundColor="Transparent"
+                            Clicked="OnLimparClicked" />
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

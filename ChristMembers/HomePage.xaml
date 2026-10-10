@@ -1,49 +1,278 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="ChristMembers.HomePage">
+    x:Class="ChristMembers.HomePage"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="#F4F6FB">
 
-<Grid Padding="24">
-        <Button
-            Text="Cadastrar-se"
-            WidthRequest="130"
-            HorizontalOptions="End"
-            VerticalOptions="Start"
-            Clicked="SignUpClicked" />
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
 
-        <VerticalStackLayout
-            Spacing="20"
-            HorizontalOptions="Center"
-            VerticalOptions="Center">
+            <!-- Cabeçalho com degradê -->
+            <Border
+                StrokeShape="RoundRectangle 0,0,36,36"
+                StrokeThickness="0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1B2F7A" Offset="0.0" />
+                        <GradientStop Color="#4B3DB8" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Border.Background>
 
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="150"
-                HorizontalOptions="Center" />
+                <Grid Padding="24,56,24,84">
 
-            <Label
-                Text="IADA"
-                FontSize="40"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" />
+                    <!-- Cruz decorativa -->
+                    <Grid
+                        WidthRequest="96"
+                        HeightRequest="128"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        Margin="0,0,-8,-56">
+                        <BoxView
+                            WidthRequest="24"
+                            HeightRequest="128"
+                            CornerRadius="12"
+                            Color="#14FFFFFF"
+                            HorizontalOptions="Center" />
+                        <BoxView
+                            WidthRequest="96"
+                            HeightRequest="24"
+                            CornerRadius="12"
+                            Color="#14FFFFFF"
+                            VerticalOptions="Start"
+                            Margin="0,36,0,0" />
+                    </Grid>
 
-            <Label
-                Text="Seja bem-vindo!"
-                FontSize="20"
-                HorizontalOptions="Center" />
+                    <VerticalStackLayout Spacing="36">
 
-            <Button
-                Text="Membros"
-                WidthRequest="240"
-                HeightRequest="60"
-                Clicked="OnMembrosClicked" />
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Border
+                                Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                Stroke="#66FFFFFF"
+                                StrokeThickness="1"
+                                BackgroundColor="#26FFFFFF"
+                                WidthRequest="58"
+                                HeightRequest="58">
+                                <Label
+                                    Text="IADA"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="14"
+                                    TextColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                            </Border>
 
-            <Button
-                Text="Visitantes"
-                WidthRequest="240"
-                HeightRequest="60"
-                Clicked="OnVisitantesClicked" />
+                            <Button
+                                Grid.Column="1"
+                                Text="Cadastrar-se"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="14"
+                                TextColor="White"
+                                BackgroundColor="#26FFFFFF"
+                                BorderColor="#66FFFFFF"
+                                BorderWidth="1"
+                                CornerRadius="20"
+                                HeightRequest="40"
+                                Padding="18,0"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                Clicked="OnCadastrarClicked" />
+                        </Grid>
 
+                        <VerticalStackLayout Spacing="10">
+                            <Label
+                                Text="Seja bem-vindo!"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="36"
+                                TextColor="White"
+                                SemanticProperties.HeadingLevel="Level1" />
+                            <Label
+                                Text="Que bom ter você aqui. Escolha por onde quer começar."
+                                FontSize="16"
+                                LineHeight="1.4"
+                                TextColor="#D6DBF5" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Cartões que sobem sobre o cabeçalho -->
+            <VerticalStackLayout Margin="20,-48,20,32" Spacing="16">
+
+                <!-- Visitante (destaque) -->
+                <Grid>
+                    <Border
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0"
+                        Padding="20">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F8CE62" Offset="0.0" />
+                                <GradientStop Color="#EBA43A" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="#EBA43A" Opacity="0.35" Radius="22" Offset="0,10" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Border
+                                Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#66FFFFFF"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                                <Label
+                                    Text="🙋"
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                <Label
+                                    Text="Sou visitante"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="20"
+                                    TextColor="#2B1D00" />
+                                <Label
+                                    Text="Registre sua visita em poucos segundos"
+                                    FontSize="14"
+                                    TextColor="#5A4100" />
+                            </VerticalStackLayout>
+
+                            <Label
+                                Grid.Column="2"
+                                Text="›"
+                                FontSize="34"
+                                TextColor="#5A4100"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Sou visitante"
+                        Clicked="OnVisitanteClicked" />
+                </Grid>
+
+                <!-- Membros -->
+                <Grid>
+                    <Border
+                        StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Border
+                                Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#E4EBFF"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                                <Label
+                                    Text="👥"
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                <Label
+                                    Text="Área de membros"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="20"
+                                    TextColor="#1B2559" />
+                                <Label
+                                    Text="Entre com seu usuário e senha"
+                                    FontSize="14"
+                                    TextColor="#6B7390" />
+                            </VerticalStackLayout>
+
+                            <Label
+                                Grid.Column="2"
+                                Text="›"
+                                FontSize="34"
+                                TextColor="#9AA1BC"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Área de membros"
+                        Clicked="OnLoginMembrosClicked" />
+                </Grid>
+
+                <!-- Novidades -->
+                <Grid>
+                    <Border
+                        StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Border
+                                Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#EEE6FF"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                                <Label
+                                    Text="📣"
+                                    FontSize="28"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                <Label
+                                    Text="Novidades"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="20"
+                                    TextColor="#1B2559" />
+                                <Label
+                                    Text="Fique por dentro do que acontece"
+                                    FontSize="14"
+                                    TextColor="#6B7390" />
+                            </VerticalStackLayout>
+
+                            <Label
+                                Grid.Column="2"
+                                Text="›"
+                                FontSize="34"
+                                TextColor="#9AA1BC"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Novidades"
+                        Clicked="OnNovidadesClicked" />
+                </Grid>
+
+            </VerticalStackLayout>
         </VerticalStackLayout>
-    </Grid>
+    </ScrollView>
+
 </ContentPage>

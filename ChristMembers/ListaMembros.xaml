@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.ListaMembros"
+             Title="Membros"
+             BackgroundColor="#F4F6FB">
+
+    <Grid RowDefinitions="Auto,*" Padding="20,16,20,0" RowSpacing="12">
+
+        <Label Grid.Row="0"
+               Text="{Binding Membros.Count, StringFormat='Total: {0}'}"
+               FontSize="15"
+               TextColor="#6B7390" />
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Membros}">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <Label Text="Nenhum membro cadastrado ainda."
+                       FontSize="16"
+                       TextColor="#6B7390"
+                       HorizontalOptions="Center"
+                       Margin="0,40,0,0" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 20"
+                            Stroke="#E4E8F4"
+                            StrokeThickness="1"
+                            BackgroundColor="White"
+                            Padding="18">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding Nome}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="18"
+                                   TextColor="#1B2559" />
+
+                            <Label Text="{Binding Telefone}"
+                                   FontSize="14"
+                                   TextColor="#6B7390" />
+
+                            <Label Text="Batismo não informado"
+                                   FontSize="13"
+                                   TextColor="#6B7390"
+                                   Margin="0,6,0,0">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding FoiBatizado}"
+                                                 Value="True">
+                                        <Setter Property="Text" Value="Batizado" />
+                                        <Setter Property="TextColor" Value="#2E7D5B" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding FoiBatizado}"
+                                                 Value="False">
+                                        <Setter Property="Text" Value="Não batizado" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
+
+        </CollectionView>
+    </Grid>
+
+</ContentPage>

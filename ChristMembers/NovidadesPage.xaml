@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.NovidadesPage"
+             Title="Novidades"
+             BackgroundColor="#F4F6FB">
+
+    <Grid>
+
+        <CollectionView ItemsSource="{Binding Novidades}"
+                        Margin="20,0,20,0">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="6" Padding="0,20,0,20">
+                    <Label Text="O que vem por aí"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="30"
+                           TextColor="#1B2559"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Text="Eventos e avisos da igreja."
+                           FontSize="16"
+                           TextColor="#6B7390" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="8" Margin="0,60,0,0">
+                    <Label Text="📣"
+                           FontSize="48"
+                           HorizontalOptions="Center" />
+                    <Label Text="Nenhuma novidade por enquanto."
+                           FontFamily="OpenSansSemibold"
+                           FontSize="18"
+                           TextColor="#1B2559"
+                           HorizontalOptions="Center" />
+                    <Label Text="Volte em breve para ver os próximos eventos."
+                           FontSize="14"
+                           TextColor="#6B7390"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 24"
+                            Stroke="#E4E8F4"
+                            StrokeThickness="1"
+                            BackgroundColor="White"
+                            Padding="0">
+                        <Border.Shadow>
+                            <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="0">
+
+                            <Image Source="{Binding CaminhoFoto}"
+                                   IsVisible="{Binding TemFoto}"
+                                   HeightRequest="210"
+                                   Aspect="AspectFill" />
+
+                            <VerticalStackLayout Padding="20" Spacing="10">
+
+                                <Border IsVisible="{Binding TemDataEvento}"
+                                        StrokeShape="RoundRectangle 14"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#FFF0CC"
+                                        Padding="12,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="{Binding TextoEvento, StringFormat='📅 {0}'}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="13"
+                                           TextColor="#8A5A00" />
+                                </Border>
+
+                                <Label Text="{Binding Titulo}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="21"
+                                       TextColor="#1B2559" />
+
+                                <Label Text="{Binding Descricao}"
+                                       FontSize="15"
+                                       LineHeight="1.4"
+                                       TextColor="#4A5275" />
+
+                                <Label Text="{Binding DataPublicacao, StringFormat='Publicado em {0:dd/MM/yyyy}'}"
+                                       FontSize="12"
+                                       TextColor="#9AA1BC"
+                                       Margin="0,4,0,0" />
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="110" Color="Transparent" />
+            </CollectionView.Footer>
+
+        </CollectionView>
+
+        <Button Text="＋ Publicar"
+                IsVisible="{Binding EhAdmin}"
+                FontFamily="OpenSansSemibold"
+                FontSize="16"
+                TextColor="White"
+                BackgroundColor="#1B2F7A"
+                CornerRadius="28"
+                HeightRequest="56"
+                Padding="26,0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,24"
+                Clicked="OnPublicarClicked" />
+
+    </Grid>
+
+</ContentPage>

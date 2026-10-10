@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:ChristMembers.Behaviors"
+             x:Class="ChristMembers.CadastroMembro">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,20,30,60"
+            Spacing="25">
+
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"/>
+
+            <Label
+                Text="IADA"
+                FontSize="40"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Cadastro de membro"
+                FontSize="20"
+                HorizontalOptions="Center" />
+
+            <Entry Placeholder="Nome" Text="{Binding Nome, Mode=TwoWay}" />
+            <Entry Placeholder="Telefone (00) 00000-0000"
+                   Keyboard="Numeric"
+                   Text="{Binding Telefone}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraTelefoneBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="CPF (000.000.000-00)"
+                   Keyboard="Numeric"
+                   Text="{Binding CPF}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraCpfBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Data de nascimento (dd/mm/aaaa)"
+                   Keyboard="Numeric"
+                   Text="{Binding DataNascimentoTexto}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraDataBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Email" Text="{Binding Email, Mode=TwoWay}" />
+            <Entry Placeholder="Cep" Text="{Binding CEP, Mode=TwoWay}" />
+            <Entry Placeholder="Endereço" Text="{Binding Endereco, Mode=TwoWay}" />
+            <Entry Placeholder="Numero" Text="{Binding Numero, Mode=TwoWay}" />
+            <Entry Placeholder="Complemento" Text="{Binding Complemento, Mode=TwoWay}" />
+            <Entry Placeholder="Bairro" Text="{Binding Bairro, Mode=TwoWay}" />
+            <Entry Placeholder="Cidade" Text="{Binding Cidade, Mode=TwoWay}" />
+            <Entry Placeholder="Estado" Text="{Binding Estado, Mode=TwoWay}" />
+            <Entry Placeholder="Data de entrada (dd/mm/aaaa)"
+       Keyboard="Numeric"
+       Text="{Binding DataEntradaTexto}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraDataBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Foi batizado?"
+                       FontAttributes="Bold"
+                       Margin="0,6,0,0" />
+                <RadioButton Content="Sim"
+                             GroupName="BatizadoGroup"
+                             IsChecked="{Binding BatizadoSim}"
+                             VerticalOptions="Center" />
+                <RadioButton Content="Não"
+                             GroupName="BatizadoGroup"
+                             IsChecked="{Binding BatizadoNao}"
+                             VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Entry Placeholder="Observações"
+                   HeightRequest="120"
+                   VerticalTextAlignment="Start"
+                   HorizontalTextAlignment="Start"
+                   Margin="0,-10,0,0"
+                   Text="{Binding Observacao, Mode=TwoWay}" />
+
+            <Label Text="{Binding MensagemErro}"
+       TextColor="Red"
+       IsVisible="{Binding TemErro}" />
+
+            <Button Text="Cadastrar" Command="{Binding CadastrarCommand}" />
+        
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
