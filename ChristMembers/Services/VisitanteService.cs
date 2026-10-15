@@ -43,4 +43,13 @@ public class VisitanteService
 
         Visitantes.Remove(visitante);
     }
+
+    public async Task Inativar(Visitante visitante)
+    {
+        visitante.Inativo = true;
+
+        await _bancoDados.AtualizarVisitante(visitante);
+
+        Visitantes.Remove(visitante);
+    }
 }

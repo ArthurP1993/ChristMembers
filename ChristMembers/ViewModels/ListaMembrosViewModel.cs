@@ -34,13 +34,13 @@ public class ListaMembrosViewModel
 
         bool confirmou = await Shell.Current.DisplayAlert(
             "Excluir membro",
-            $"Deseja excluir \"{membro.Nome}\"? Todos os dados desse cadastro serão apagados.",
+            $"Deseja excluir \"{membro.Nome}\"?",
             "Excluir",
             "Cancelar");
 
         if (!confirmou)
             return;
 
-        await _membroService.Excluir(membro);
+        await _membroService.Inativar(membro);
     }
 }

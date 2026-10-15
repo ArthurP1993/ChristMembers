@@ -41,6 +41,6 @@ public class ListaVisitantesViewModel
         if (!confirmou)
             return;
 
-        await _visitanteService.Excluir(visitante);
+        await _visitanteService.Inativar(visitante);
     }
 }

@@ -12,4 +12,6 @@ public class Visitante
     public string Telefone { get; set; } = string.Empty;
 
     public DateTime DataVisita { get; set; }
+
+    public bool Inativo { get; set; }
 }

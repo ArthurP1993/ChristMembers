@@ -163,6 +163,72 @@
             Clicked="OnNovidadesClicked" />
             </Grid>
 
+            <!-- Pedidos de oração -->
+            <Grid>
+                <Border StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+                                <Border.Shadow>
+                                    <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                                    <Border Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="#E3F6EC"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                                        <Label Text="🙏"
+                                   FontSize="28"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                        <Label Text="Pedidos de oração"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="20"
+                                   TextColor="#1B2559" />
+                                        <Label Text="Acompanhar e responder pedidos"
+                                   FontSize="14"
+                                   TextColor="#6B7390" />
+                                    </VerticalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="2"
+                                               Spacing="10"
+                                               VerticalOptions="Center">
+
+                                        <Border x:Name="BadgePedidos"
+                                    IsVisible="False"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#C62828"
+                                    Padding="9,3"
+                                    VerticalOptions="Center">
+                                            <Label x:Name="TextoBadgePedidos"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="12"
+                                       TextColor="White" />
+                                        </Border>
+
+                                        <Label Text="›"
+                                   FontSize="34"
+                                   TextColor="#9AA1BC"
+                                   VerticalOptions="Center" />
+
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+
+                            <Button BackgroundColor="Transparent"
+                        CornerRadius="24"
+                        SemanticProperties.Description="Pedidos de oração"
+                        Clicked="OnPedidosOracaoClicked" />
+            </Grid>
+
         </VerticalStackLayout>
     </ScrollView>
 

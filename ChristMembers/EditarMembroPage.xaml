@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:ChristMembers.Behaviors"
+             x:Class="ChristMembers.EditarMembroPage"
+             Title="Editar cadastro">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,20,30,60"
+            Spacing="25">
+
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"/>
+
+            <Label
+                Text="IADA"
+                FontSize="40"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Editar cadastro"
+                FontSize="20"
+                HorizontalOptions="Center" />
+
+            <Entry Placeholder="Nome" Text="{Binding Nome}" />
+
+            <Entry Placeholder="Telefone (11) 99999-9999"
+                   Keyboard="Numeric"
+                   Text="{Binding Telefone}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraTelefoneBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry Placeholder="CPF (000.000.000-00)"
+                   Keyboard="Numeric"
+                   Text="{Binding CPF}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraCpfBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry Placeholder="Data de nascimento (dd/mm/aaaa)"
+                   Keyboard="Numeric"
+                   Text="{Binding DataNascimentoTexto}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraDataBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+            <Entry Placeholder="Cep" Keyboard="Numeric" Text="{Binding CEP}" />
+            <Entry Placeholder="Endereço" Text="{Binding Endereco}" />
+            <Entry Placeholder="Numero" Text="{Binding Numero}" />
+            <Entry Placeholder="Complemento" Text="{Binding Complemento}" />
+            <Entry Placeholder="Bairro" Text="{Binding Bairro}" />
+            <Entry Placeholder="Cidade" Text="{Binding Cidade}" />
+            <Entry Placeholder="Estado" Text="{Binding Estado}" />
+
+            <Entry Placeholder="Data de entrada (dd/mm/aaaa)"
+                   Keyboard="Numeric"
+                   Text="{Binding DataEntradaTexto}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraDataBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Foi batizado?"
+                       FontAttributes="Bold"
+                       Margin="0,6,0,0" />
+                <RadioButton Content="Sim"
+                             GroupName="BatismoEdicao"
+                             IsChecked="{Binding BatizadoSim}"
+                             VerticalOptions="Center" />
+                <RadioButton Content="Não"
+                             GroupName="BatismoEdicao"
+                             IsChecked="{Binding BatizadoNao}"
+                             VerticalOptions="Center" />
+                <RadioButton Content="Não informado"
+                             GroupName="BatismoEdicao"
+                             IsChecked="{Binding BatizadoNaoInformado}"
+                             VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Editor Placeholder="Observações"
+                    HeightRequest="120"
+                    Margin="0,-10,0,0"
+                    Text="{Binding Observacao}" />
+
+            <Label Text="{Binding MensagemErro}"
+                   TextColor="Red"
+                   IsVisible="{Binding TemErro}" />
+
+            <Button Text="Salvar alterações"
+                    Command="{Binding SalvarCommand}" />
+
+            <Button Text="Cancelar"
+                    BackgroundColor="Transparent"
+                    TextColor="Gray"
+                    Command="{Binding CancelarCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

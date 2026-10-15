@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:ChristMembers.Behaviors"
+             x:Class="ChristMembers.NovoPedidoOracaoPage"
+             Title="Pedido de oração"
+             BackgroundColor="#F4F6FB">
+
+    <ScrollView>
+        <Grid>
+
+            <!-- Formulário -->
+            <VerticalStackLayout Padding="24,24,24,60"
+                                 Spacing="20"
+                                 IsVisible="{Binding MostrarFormulario}">
+
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Como podemos orar por você?"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="28"
+                           TextColor="#1B2559"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Text="Compartilhe o seu pedido. Ele será lido com cuidado e carinho."
+                           FontSize="16"
+                           LineHeight="1.4"
+                           TextColor="#6B7390" />
+                </VerticalStackLayout>
+
+                <Button Text="🙏 Ver mural de oração"
+                        FontSize="15"
+                        TextColor="#1B2F7A"
+                        BackgroundColor="#E4EBFF"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnMuralClicked" />
+
+                <Border StrokeShape="RoundRectangle 24"
+                        Stroke="#E4E8F4"
+                        StrokeThickness="1"
+                        BackgroundColor="White"
+                        Padding="20">
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="Prefiro não me identificar"
+                                   FontSize="16"
+                                   TextColor="#1B2559"
+                                   VerticalOptions="Center" />
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding Anonimo}"
+                                    OnColor="#1B2F7A"
+                                    VerticalOptions="Center" />
+                        </Grid>
+
+                        <Entry Placeholder="Seu nome (opcional)"
+                               IsVisible="{Binding NaoAnonimo}"
+                               TextColor="#1B2559"
+                               PlaceholderColor="#9AA1BC"
+                               Text="{Binding Nome}" />
+
+                        <VerticalStackLayout Spacing="4" IsVisible="{Binding NaoAnonimo}">
+                            <Entry Placeholder="Telefone (opcional)"
+                                   Keyboard="Numeric"
+                                   TextColor="#1B2559"
+                                   PlaceholderColor="#9AA1BC"
+                                   Text="{Binding Telefone}">
+                                <Entry.Behaviors>
+                                    <behaviors:MascaraTelefoneBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Label Text="Informe o telefone só se quiser receber retorno da liderança."
+                                   FontSize="12"
+                                   TextColor="#6B7390" />
+                        </VerticalStackLayout>
+
+                        <Picker Title="Categoria do pedido"
+                                ItemsSource="{Binding Categorias}"
+                                SelectedItem="{Binding Categoria}"
+                                TextColor="#1B2559"
+                                TitleColor="#9AA1BC" />
+
+                        <VerticalStackLayout Spacing="4">
+                            <Editor Placeholder="Escreva aqui o seu pedido"
+                                    MaxLength="500"
+                                    HeightRequest="150"
+                                    TextColor="#1B2559"
+                                    PlaceholderColor="#9AA1BC"
+                                    Text="{Binding Texto}" />
+                            <Label Text="{Binding ContadorTexto}"
+                                   FontSize="12"
+                                   TextColor="#9AA1BC"
+                                   HorizontalOptions="End" />
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="Permitir no mural de oração"
+                                       FontSize="16"
+                                       TextColor="#1B2559" />
+                                <Label Text="Só o texto do pedido poderá aparecer. Nome e telefone nunca são exibidos."
+                                       FontSize="12"
+                                       LineHeight="1.3"
+                                       TextColor="#6B7390" />
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding PermiteMural}"
+                                    OnColor="#1B2F7A"
+                                    VerticalOptions="Center" />
+                        </Grid>
+
+                        <Border StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="#EEF2FF"
+                                Padding="14">
+                            <Label Text="Seu pedido será lido apenas pela liderança da igreja. Evite escrever dados de outras pessoas sem a autorização delas."
+                                   FontSize="13"
+                                   LineHeight="1.35"
+                                   TextColor="#3C4A7D" />
+                        </Border>
+
+                        <Label Text="{Binding MensagemErro}"
+                               TextColor="#C62828"
+                               FontSize="14"
+                               IsVisible="{Binding TemErro}" />
+
+                        <Button Text="Enviar pedido"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="17"
+                                TextColor="White"
+                                BackgroundColor="#1B2F7A"
+                                CornerRadius="16"
+                                HeightRequest="52"
+                                Command="{Binding EnviarCommand}" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- Acolhimento depois de enviar -->
+            <VerticalStackLayout Padding="24"
+                                 Spacing="16"
+                                 Margin="0,80,0,0"
+                                 IsVisible="{Binding Enviado}">
+
+                <Label Text="🙏"
+                       FontSize="64"
+                       HorizontalOptions="Center" />
+
+                <Label Text="Recebemos o seu pedido"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="26"
+                       TextColor="#1B2559"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+
+                <Label Text="Estamos orando por você."
+                       FontSize="18"
+                       TextColor="#6B7390"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+
+                <Button Text="Voltar ao início"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="17"
+                        TextColor="White"
+                        BackgroundColor="#1B2F7A"
+                        CornerRadius="16"
+                        HeightRequest="52"
+                        Margin="0,16,0,0"
+                        Command="{Binding ConcluirCommand}" />
+
+                <Button Text="🙏 Ver mural de oração"
+                        FontSize="15"
+                        TextColor="#1B2F7A"
+                        BackgroundColor="#E4EBFF"
+                        CornerRadius="14"
+                        HeightRequest="46"
+                        Clicked="OnMuralClicked" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

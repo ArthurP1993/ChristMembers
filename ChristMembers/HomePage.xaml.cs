@@ -26,4 +26,9 @@ public partial class HomePage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(CadastroVisitante));
     }
+
+    private async void OnOracaoClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(NovoPedidoOracaoPage));
+    }
 }

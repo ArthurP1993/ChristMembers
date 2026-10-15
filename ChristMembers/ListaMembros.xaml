@@ -13,7 +13,10 @@
                FontSize="15"
                TextColor="#6B7390" />
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Membros}">
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Membros}"                        
+                        SelectionMode="Single"
+                        SelectionChanged="OnMembroSelecionado">
 
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />

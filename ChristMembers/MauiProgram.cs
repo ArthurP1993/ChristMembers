@@ -39,6 +39,15 @@ namespace ChristMembers
             builder.Services.AddTransient<NovidadesPage>();
             builder.Services.AddTransient<PublicarNovidadeViewModel>();
             builder.Services.AddTransient<PublicarNovidadePage>();
+            builder.Services.AddSingleton<PedidoOracaoService>();
+            builder.Services.AddTransient<NovoPedidoOracaoViewModel>();
+            builder.Services.AddTransient<NovoPedidoOracaoPage>();
+            builder.Services.AddTransient<ListaPedidosOracaoViewModel>();
+            builder.Services.AddTransient<ListaPedidosOracaoPage>();
+            builder.Services.AddTransient<MuralOracaoViewModel>();
+            builder.Services.AddTransient<MuralOracaoPage>();
+            builder.Services.AddTransient<EditarMembroViewModel>();
+            builder.Services.AddTransient<EditarMembroPage>();
 
             return builder.Build();
         }

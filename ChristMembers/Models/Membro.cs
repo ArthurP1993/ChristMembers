@@ -21,4 +21,5 @@ public class Membro
     public DateTime? DataEntrada { get; set; }
     public bool? FoiBatizado { get; set; }
     public string Observacao { get; set; }
+    public bool Inativo { get; set; }
 }

@@ -35,6 +35,25 @@ public class MembroService
         Membros.Add(membro);
     }
 
+    public async Task Atualizar(Membro membro)
+    {
+        await _bancoDados.AtualizarMembro(membro);
+
+        int indice = Membros.IndexOf(membro);
+
+        if (indice >= 0)
+            Membros[indice] = membro;
+    }
+
+    public async Task Inativar(Membro membro)
+    {
+        membro.Inativo = true;
+
+        await _bancoDados.AtualizarMembro(membro);
+
+        Membros.Remove(membro);
+    }
+
     public async Task Excluir(Membro membro)
     {
         await _bancoDados.ExcluirMembro(membro);
