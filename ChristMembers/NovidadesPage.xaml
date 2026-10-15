@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ChristMembers.ViewModels"
              x:Class="ChristMembers.NovidadesPage"
              Title="Novidades"
              BackgroundColor="#F4F6FB">
@@ -90,6 +91,18 @@
                                        FontSize="12"
                                        TextColor="#9AA1BC"
                                        Margin="0,4,0,0" />
+                                <Button Text="Remover"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=EhAdmin}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=ExcluirCommand}"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="14"
+                                        TextColor="#C62828"
+                                        BackgroundColor="#FDECEC"
+                                        CornerRadius="14"
+                                        HeightRequest="42"
+                                        Padding="18,0"
+                                        HorizontalOptions="End"
+                                        Margin="0,8,0,0" />
                             </VerticalStackLayout>
 
                         </VerticalStackLayout>
