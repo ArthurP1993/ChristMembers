@@ -66,7 +66,7 @@
 
                             <Button
                                 Grid.Column="1"
-                                Text="Cadastrar-se"
+                                Text="Login"
                                 FontFamily="OpenSansSemibold"
                                 FontSize="14"
                                 TextColor="White"
@@ -78,7 +78,7 @@
                                 Padding="18,0"
                                 HorizontalOptions="End"
                                 VerticalOptions="Center"
-                                Clicked="OnCadastrarClicked" />
+                                Clicked="OnLoginMembrosClicked" />
                         </Grid>
 
                         <VerticalStackLayout Spacing="10">

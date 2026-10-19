@@ -23,6 +23,7 @@ public partial class LoginPage : ContentPage
         _primeiroAcesso = !await _auth.ExisteUsuario();
 
         ConfirmarSenha.IsVisible = _primeiroAcesso;
+        //AreaCadastro.IsVisible = !_primeiroAcesso;
         Mensagem.IsVisible = false;
 
         if (_primeiroAcesso)
@@ -95,5 +96,10 @@ public partial class LoginPage : ContentPage
         Senha.Text = string.Empty;
         ConfirmarSenha.Text = string.Empty;
         Mensagem.IsVisible = false;
+    }
+
+    private async void OnCadastrarClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(CadastroMembro));
     }
 }
