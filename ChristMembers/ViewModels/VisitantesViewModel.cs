@@ -14,6 +14,8 @@ public class VisitantesViewModel : INotifyPropertyChanged
     private string _nome = string.Empty;
     private string _telefone = string.Empty;
     private string _mensagemErro = string.Empty;
+    private string _mensagemSucesso = string.Empty;
+    private int _versaoMensagemSucesso;
 
     public string Nome
     {
@@ -40,6 +42,19 @@ public class VisitantesViewModel : INotifyPropertyChanged
 
     public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
 
+    public string MensagemSucesso
+    {
+        get => _mensagemSucesso;
+
+        set
+        {
+            if (SetProperty(ref _mensagemSucesso, value))
+                OnPropertyChanged(nameof(TemSucesso));
+        }
+    }
+
+    public bool TemSucesso => !string.IsNullOrEmpty(MensagemSucesso);
+
     public ObservableCollection<Visitante> Visitantes => _visitanteService.Visitantes;
 
     public ICommand CadastrarCommand { get; }
@@ -53,6 +68,8 @@ public class VisitantesViewModel : INotifyPropertyChanged
 
     private async Task Cadastrar()
     {
+        MensagemSucesso = string.Empty;
+
         List<string> erros = new();
 
         if (string.IsNullOrWhiteSpace(Nome))
@@ -77,7 +94,24 @@ public class VisitantesViewModel : INotifyPropertyChanged
 
         await _visitanteService.Cadastrar(visitante);
 
+        string nomeCadastrado = visitante.Nome;
+
         LimparFormulario();
+
+        await Shell.Current.DisplayAlert("Sucesso", "Visitante cadastrado com sucesso!", "OK");
+    }
+
+    private async Task MostrarSucesso(string mensagem)
+    {
+        int versao = ++_versaoMensagemSucesso;
+
+        MensagemSucesso = mensagem;
+
+        await Task.Delay(4000);
+
+        // Só esconde se não houve outro cadastro nesse intervalo
+        if (versao == _versaoMensagemSucesso)
+            MensagemSucesso = string.Empty;
     }
 
     private void LimparFormulario()

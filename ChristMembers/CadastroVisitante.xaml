@@ -27,7 +27,7 @@
             <Label Text="{Binding MensagemErro}"
                    TextColor="Red"
                    IsVisible="{Binding TemErro}" />
-
+        
             <Button Text="Cadastrar"
                     Command="{Binding CadastrarCommand}" />
 
