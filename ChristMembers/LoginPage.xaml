@@ -35,11 +35,25 @@
                            PlaceholderColor="#9AA1BC"
                            IsSpellCheckEnabled="False" />
 
-                    <Entry x:Name="Senha"
-                           Placeholder="Senha"
-                           IsPassword="True"
-                           TextColor="#1B2559"
-                           PlaceholderColor="#9AA1BC" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
+                        <Entry x:Name="Senha"
+                               Grid.Column="0"
+                               Placeholder="Senha"
+                               IsPassword="True"
+                               TextColor="#1B2559"
+                               PlaceholderColor="#9AA1BC" />
+
+                        <ImageButton x:Name="BotaoOlho"
+                                     Grid.Column="1"
+                                     Source="eye.png"
+                                     WidthRequest="44"
+                                     HeightRequest="44"
+                                     Padding="10"
+                                     BackgroundColor="Transparent"
+                                     VerticalOptions="Center"
+                                     SemanticProperties.Description="Mostrar ou ocultar senha"
+                                     Clicked="OnMostrarSenhaClicked" />
+                    </Grid>
 
                     <Entry x:Name="ConfirmarSenha"
                            Placeholder="Confirmar senha"
@@ -71,14 +85,15 @@
 
                 </VerticalStackLayout>
             </Border>
+
             <VerticalStackLayout x:Name="AreaCadastro"
-                     Spacing="8"
-                     HorizontalOptions="Fill">
+                                 Spacing="8"
+                                 HorizontalOptions="Fill">
 
                 <Label Text="Ainda não tem cadastro?"
-                        FontSize="14"
-                        TextColor="#6B7390"
-                        HorizontalOptions="Center" />
+                       FontSize="14"
+                       TextColor="#6B7390"
+                       HorizontalOptions="Center" />
 
                 <Button Text="Cadastre-se"
                         FontFamily="OpenSansSemibold"

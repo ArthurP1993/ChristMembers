@@ -23,7 +23,6 @@ public partial class LoginPage : ContentPage
         _primeiroAcesso = !await _auth.ExisteUsuario();
 
         ConfirmarSenha.IsVisible = _primeiroAcesso;
-        //AreaCadastro.IsVisible = !_primeiroAcesso;
         Mensagem.IsVisible = false;
 
         if (_primeiroAcesso)
@@ -84,6 +83,22 @@ public partial class LoginPage : ContentPage
         LimparCampos();
     }
 
+    private void OnMostrarSenhaClicked(object sender, EventArgs e)
+    {
+        bool mostrar = Senha.IsPassword; // se está oculta, vai mostrar
+
+        int posSenha = Senha.CursorPosition;
+        int posConfirmar = ConfirmarSenha.CursorPosition;
+
+        Senha.IsPassword = !mostrar;
+        ConfirmarSenha.IsPassword = !mostrar;
+
+        Senha.CursorPosition = posSenha;
+        ConfirmarSenha.CursorPosition = posConfirmar;
+
+        BotaoOlho.Source = mostrar ? "eye_off.png" : "eye.png";
+    }
+
     private void MostrarMensagem(string texto)
     {
         Mensagem.Text = texto;
@@ -96,6 +111,10 @@ public partial class LoginPage : ContentPage
         Senha.Text = string.Empty;
         ConfirmarSenha.Text = string.Empty;
         Mensagem.IsVisible = false;
+
+        Senha.IsPassword = true;
+        ConfirmarSenha.IsPassword = true;
+        BotaoOlho.Source = "eye.png";
     }
 
     private async void OnCadastrarClicked(object sender, EventArgs e)
