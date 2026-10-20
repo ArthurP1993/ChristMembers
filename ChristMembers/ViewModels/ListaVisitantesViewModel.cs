@@ -1,16 +1,39 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using ChristMembers.Helpers;
 using ChristMembers.Models;
 using ChristMembers.Services;
 
 namespace ChristMembers.ViewModels;
 
-public class ListaVisitantesViewModel
+public class ListaVisitantesViewModel : INotifyPropertyChanged
 {
     private readonly VisitanteService _visitanteService;
     private readonly AuthService _auth;
 
-    public ObservableCollection<Visitante> Visitantes => _visitanteService.Visitantes;
+    private string _textoBusca = string.Empty;
+    private string _resumo = string.Empty;
+
+    public ObservableCollection<Visitante> Visitantes { get; } = new();
+
+    public string TextoBusca
+    {
+        get => _textoBusca;
+
+        set
+        {
+            if (SetProperty(ref _textoBusca, value ?? string.Empty))
+                AplicarFiltro();
+        }
+    }
+
+    public string Resumo
+    {
+        get => _resumo;
+        private set => SetProperty(ref _resumo, value);
+    }
 
     public ICommand ExcluirCommand { get; }
 
@@ -25,6 +48,25 @@ public class ListaVisitantesViewModel
     public async Task Inicializar()
     {
         await _visitanteService.Inicializar();
+
+        AplicarFiltro();
+    }
+
+    private void AplicarFiltro()
+    {
+        Visitantes.Clear();
+
+        foreach (Visitante visitante in _visitanteService.Visitantes
+                     .Where(v => BuscaHelper.Combina(TextoBusca, v.Nome, v.Telefone)))
+        {
+            Visitantes.Add(visitante);
+        }
+
+        int total = _visitanteService.Visitantes.Count;
+
+        Resumo = string.IsNullOrWhiteSpace(TextoBusca)
+            ? $"Total: {total}"
+            : $"Exibindo {Visitantes.Count} de {total}";
     }
 
     private async Task Excluir(Visitante? visitante)
@@ -42,5 +84,26 @@ public class ListaVisitantesViewModel
             return;
 
         await _visitanteService.Inativar(visitante);
+
+        AplicarFiltro();
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? propriedade = null)
+    {
+        PropertyChanged?.Invoke(
+            this,
+            new PropertyChangedEventArgs(propriedade));
+    }
+
+    protected bool SetProperty<T>(ref T campo, T valor, [CallerMemberName] string? propriedade = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(campo, valor))
+            return false;
+
+        campo = valor;
+        OnPropertyChanged(propriedade);
+        return true;
     }
 }

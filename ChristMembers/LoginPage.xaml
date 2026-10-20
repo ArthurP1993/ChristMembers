@@ -9,14 +9,12 @@
         <VerticalStackLayout Padding="24,32,24,60" Spacing="20">
 
             <VerticalStackLayout Spacing="8">
-                <Label x:Name="Titulo"
-                       Text="Acesso de membros"
+                <Label Text="Acesso de membros"
                        FontFamily="OpenSansSemibold"
                        FontSize="30"
                        TextColor="#1B2559"
                        SemanticProperties.HeadingLevel="Level1" />
-                <Label x:Name="Subtitulo"
-                       Text="Entre com o seu usuário e senha."
+                <Label Text="Entre com o seu e-mail e senha."
                        FontSize="16"
                        TextColor="#6B7390" />
             </VerticalStackLayout>
@@ -29,14 +27,15 @@
 
                 <VerticalStackLayout Spacing="14">
 
-                    <Entry x:Name="Usuario"
-                           Placeholder="Usuário"
+                    <Entry x:Name="CampoEmail"
+                           Placeholder="E-mail"
+                           Keyboard="Email"
                            TextColor="#1B2559"
                            PlaceholderColor="#9AA1BC"
                            IsSpellCheckEnabled="False" />
 
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
-                        <Entry x:Name="Senha"
+                        <Entry x:Name="CampoSenha"
                                Grid.Column="0"
                                Placeholder="Senha"
                                IsPassword="True"
@@ -54,13 +53,6 @@
                                      SemanticProperties.Description="Mostrar ou ocultar senha"
                                      Clicked="OnMostrarSenhaClicked" />
                     </Grid>
-
-                    <Entry x:Name="ConfirmarSenha"
-                           Placeholder="Confirmar senha"
-                           IsPassword="True"
-                           IsVisible="False"
-                           TextColor="#1B2559"
-                           PlaceholderColor="#9AA1BC" />
 
                     <Label x:Name="Mensagem"
                            TextColor="#C62828"
@@ -86,8 +78,7 @@
                 </VerticalStackLayout>
             </Border>
 
-            <VerticalStackLayout x:Name="AreaCadastro"
-                                 Spacing="8"
+            <VerticalStackLayout Spacing="8"
                                  HorizontalOptions="Fill">
 
                 <Label Text="Ainda não tem cadastro?"

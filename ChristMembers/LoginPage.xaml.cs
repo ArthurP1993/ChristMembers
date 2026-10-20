@@ -5,7 +5,7 @@ namespace ChristMembers;
 public partial class LoginPage : ContentPage
 {
     private readonly AuthService _auth;
-    private bool _primeiroAcesso;
+    private bool _entrando;
 
     public LoginPage(AuthService auth)
     {
@@ -18,64 +18,57 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
 
-        _auth.Sair();
-
-        _primeiroAcesso = !await _auth.ExisteUsuario();
-
-        ConfirmarSenha.IsVisible = _primeiroAcesso;
         Mensagem.IsVisible = false;
 
-        if (_primeiroAcesso)
-        {
-            Titulo.Text = "Primeiro acesso";
-            Subtitulo.Text = "Use o usuário admin e escolha uma senha com pelo menos 6 caracteres.";
-            BotaoEntrar.Text = "Criar senha";
-        }
-        else
-        {
-            Titulo.Text = "Acesso de membros";
-            Subtitulo.Text = "Entre com o seu usuário e senha.";
-            BotaoEntrar.Text = "Entrar";
-        }
+        await _auth.SairAsync();
     }
 
     private async void OnEntrarClicked(object sender, EventArgs e)
     {
-        string usuario = Usuario.Text?.Trim() ?? string.Empty;
-        string senha = Senha.Text ?? string.Empty;
+        if (_entrando)
+            return;
 
-        if (_primeiroAcesso)
+        string email = CampoEmail.Text?.Trim() ?? string.Empty;
+        string senha = CampoSenha.Text ?? string.Empty;
+
+        if (email.Length == 0 || senha.Length == 0)
         {
-            if (!string.Equals(usuario, AuthService.UsuarioAdmin, StringComparison.OrdinalIgnoreCase))
-            {
-                MostrarMensagem("No primeiro acesso, o usuário deve ser admin.");
-                return;
-            }
-
-            if (senha.Length < 6)
-            {
-                MostrarMensagem("A senha precisa ter pelo menos 6 caracteres.");
-                return;
-            }
-
-            if (senha != ConfirmarSenha.Text)
-            {
-                MostrarMensagem("As senhas não são iguais.");
-                return;
-            }
-
-            await _auth.CriarUsuario(usuario, senha, AuthService.CargoAdmin);
-        }
-
-        if (await _auth.Validar(usuario, senha) == null)
-        {
-            MostrarMensagem("Usuário ou senha incorretos.");
+            MostrarMensagem("Informe o e-mail e a senha.");
             return;
         }
 
-        LimparCampos();
+        _entrando = true;
+        BotaoEntrar.IsEnabled = false;
+        BotaoEntrar.Text = "Entrando...";
 
-        await Shell.Current.GoToAsync(nameof(PainelAdmin));
+        try
+        {
+            string? erro = await _auth.EntrarAsync(email, senha);
+
+            if (erro != null)
+            {
+                MostrarMensagem(erro);
+                return;
+            }
+
+            if (_auth.UsuarioLogado?.Cargo != AuthService.CargoAdmin)
+            {
+                await _auth.SairAsync();
+
+                MostrarMensagem("Este acesso não tem permissão de administrador.");
+                return;
+            }
+
+            LimparCampos();
+
+            await Shell.Current.GoToAsync(nameof(PainelAdmin));
+        }
+        finally
+        {
+            _entrando = false;
+            BotaoEntrar.IsEnabled = true;
+            BotaoEntrar.Text = "Entrar";
+        }
     }
 
     private void OnLimparClicked(object sender, EventArgs e)
@@ -85,18 +78,20 @@ public partial class LoginPage : ContentPage
 
     private void OnMostrarSenhaClicked(object sender, EventArgs e)
     {
-        bool mostrar = Senha.IsPassword; // se está oculta, vai mostrar
+        bool mostrar = CampoSenha.IsPassword; // se está oculta, vai mostrar
 
-        int posSenha = Senha.CursorPosition;
-        int posConfirmar = ConfirmarSenha.CursorPosition;
+        int posicao = CampoSenha.CursorPosition;
 
-        Senha.IsPassword = !mostrar;
-        ConfirmarSenha.IsPassword = !mostrar;
+        CampoSenha.IsPassword = !mostrar;
 
-        Senha.CursorPosition = posSenha;
-        ConfirmarSenha.CursorPosition = posConfirmar;
+        CampoSenha.CursorPosition = posicao;
 
         BotaoOlho.Source = mostrar ? "eye_off.png" : "eye.png";
+    }
+
+    private async void OnCadastrarClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(CadastroMembro));
     }
 
     private void MostrarMensagem(string texto)
@@ -107,18 +102,11 @@ public partial class LoginPage : ContentPage
 
     private void LimparCampos()
     {
-        Usuario.Text = string.Empty;
-        Senha.Text = string.Empty;
-        ConfirmarSenha.Text = string.Empty;
+        CampoEmail.Text = string.Empty;
+        CampoSenha.Text = string.Empty;
         Mensagem.IsVisible = false;
 
-        Senha.IsPassword = true;
-        ConfirmarSenha.IsPassword = true;
+        CampoSenha.IsPassword = true;
         BotaoOlho.Source = "eye.png";
-    }
-
-    private async void OnCadastrarClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(CadastroMembro));
     }
 }

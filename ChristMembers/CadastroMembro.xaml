@@ -10,8 +10,9 @@
             Spacing="25">
 
             <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"/>
+                Source="logo.png"
+                HeightRequest="120"
+                HorizontalOptions="Center"/>
 
             <Label
                 Text="IADA"

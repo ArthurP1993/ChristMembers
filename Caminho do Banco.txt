@@ -1,1 +1,3 @@
 C:\Users\Arthur\AppData\Local\User Name\com.companyname.christmembers\Data
+
+https://supabase.com/dashboard/project/tgakswaqkukwpgztojdv/editor/17648?schema=public

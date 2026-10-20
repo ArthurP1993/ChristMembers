@@ -1,82 +1,96 @@
-﻿using System.Security.Cryptography;
-using ChristMembers.Data;
-using ChristMembers.Models;
+﻿using ChristMembers.Models;
 
 namespace ChristMembers.Services;
 
 public class AuthService
 {
-    public const string UsuarioAdmin = "admin";
     public const string CargoAdmin = "Administrador";
+    public const string CargoUsuario = "Usuário";
 
-    private const int Iteracoes = 100_000;
+    private readonly SupabaseServico _supabase;
 
-    private readonly BancoDados _bancoDados;
+    public PerfilUsuario? UsuarioLogado { get; private set; }
 
-    public Usuario? UsuarioLogado { get; private set; }
-
-    public AuthService(BancoDados bancoDados)
+    public AuthService(SupabaseServico supabase)
     {
-        _bancoDados = bancoDados;
+        _supabase = supabase;
     }
 
-    public async Task<bool> ExisteUsuario()
+    // Devolve null quando deu certo, ou a mensagem para mostrar na tela.
+    public async Task<string?> EntrarAsync(string email, string senha)
     {
-        return await _bancoDados.ExisteAlgumUsuario();
-    }
-
-    public async Task CriarUsuario(string nomeUsuario, string senha, string cargo)
-    {
-        byte[] sal = RandomNumberGenerator.GetBytes(16);
-
-        Usuario usuario = new Usuario
+        try
         {
-            NomeUsuario = Normalizar(nomeUsuario),
-            Sal = Convert.ToBase64String(sal),
-            SenhaHash = Convert.ToBase64String(GerarHash(senha, sal)),
-            Cargo = cargo,
-            Ativo = true,
-            DataCriacao = DateTime.Now
-        };
+            var cliente = await _supabase.ObterAsync();
 
-        await _bancoDados.SalvarUsuario(usuario);
+            var sessao = await cliente.Auth.SignIn(email.Trim(), senha);
+
+            string? idAuth = sessao?.User?.Id;
+
+            if (string.IsNullOrEmpty(idAuth))
+            {
+                await SairAsync();
+                return "E-mail ou senha incorretos.";
+            }
+
+            var respostaPerfil = await cliente
+                .From<PerfilUsuario>()
+                .Where(p => p.IdAuth == idAuth)
+                .Get();
+
+            PerfilUsuario? perfil = respostaPerfil.Models.FirstOrDefault();
+
+            if (perfil == null || !perfil.Ativo)
+            {
+                await SairAsync();
+                return "Este acesso não está liberado. Fale com a administração.";
+            }
+
+            bool admin = false;
+
+            if (perfil.IdSetor.HasValue)
+            {
+                long idSetor = perfil.IdSetor.Value;
+
+                var respostaSetor = await cliente
+                    .From<Setor>()
+                    .Where(s => s.Id == idSetor)
+                    .Get();
+
+                admin = respostaSetor.Models.FirstOrDefault()?.Admin ?? false;
+            }
+
+            perfil.Cargo = admin ? CargoAdmin : CargoUsuario;
+
+            UsuarioLogado = perfil;
+
+            return null;
+        }
+        catch (HttpRequestException)
+        {
+            await SairAsync();
+            return "Não foi possível conectar. Verifique a internet.";
+        }
+        catch (Exception)
+        {
+            await SairAsync();
+            return "E-mail ou senha incorretos.";
+        }
     }
 
-    public async Task<Usuario?> Validar(string nomeUsuario, string senha)
-    {
-        Usuario? usuario = await _bancoDados.BuscarUsuario(Normalizar(nomeUsuario));
-
-        if (usuario == null || !usuario.Ativo)
-            return null;
-
-        byte[] esperado = Convert.FromBase64String(usuario.SenhaHash);
-        byte[] calculado = GerarHash(senha, Convert.FromBase64String(usuario.Sal));
-
-        if (!CryptographicOperations.FixedTimeEquals(esperado, calculado))
-            return null;
-
-        UsuarioLogado = usuario;
-
-        return usuario;
-    }
-
-    public void Sair()
+    public async Task SairAsync()
     {
         UsuarioLogado = null;
-    }
 
-    private static string Normalizar(string nomeUsuario)
-    {
-        return nomeUsuario.Trim().ToLowerInvariant();
-    }
+        try
+        {
+            var cliente = await _supabase.ObterAsync();
 
-    private static byte[] GerarHash(string senha, byte[] sal)
-    {
-        return Rfc2898DeriveBytes.Pbkdf2(
-            senha,
-            sal,
-            Iteracoes,
-            HashAlgorithmName.SHA256,
-            32);
+            await cliente.Auth.SignOut();
+        }
+        catch (Exception)
+        {
+            // Sem sessão ou sem internet: o importante é limpar o usuário local.
+        }
     }
 }

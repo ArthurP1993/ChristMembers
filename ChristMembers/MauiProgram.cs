@@ -48,6 +48,7 @@ namespace ChristMembers
             builder.Services.AddTransient<MuralOracaoPage>();
             builder.Services.AddTransient<EditarMembroViewModel>();
             builder.Services.AddTransient<EditarMembroPage>();
+            builder.Services.AddSingleton<SupabaseServico>();
 
             return builder.Build();
         }

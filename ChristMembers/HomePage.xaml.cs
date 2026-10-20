@@ -1,5 +1,7 @@
 namespace ChristMembers;
-
+using ChristMembers.Models;
+using ChristMembers.Services;
+using Microsoft.Extensions.DependencyInjection;
 public partial class HomePage : ContentPage
 {
     public HomePage()

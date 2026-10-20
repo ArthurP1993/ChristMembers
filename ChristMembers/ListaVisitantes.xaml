@@ -6,14 +6,21 @@
              Title="Visitantes"
              BackgroundColor="#F4F6FB">
 
-    <Grid RowDefinitions="Auto,*" Padding="20,16,20,0" RowSpacing="12">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20,16,20,0" RowSpacing="10">
 
-        <Label Grid.Row="0"
-               Text="{Binding Visitantes.Count, StringFormat='Total: {0}'}"
+        <SearchBar Grid.Row="0"
+                   Placeholder="Buscar por nome ou telefone"
+                   Text="{Binding TextoBusca}"
+                   TextColor="#1B2559"
+                   PlaceholderColor="#9AA1BC"
+                   BackgroundColor="White" />
+
+        <Label Grid.Row="1"
+               Text="{Binding Resumo}"
                FontSize="15"
                TextColor="#6B7390" />
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Visitantes}">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Visitantes}">
 
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
