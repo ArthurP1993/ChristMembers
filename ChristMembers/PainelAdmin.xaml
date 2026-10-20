@@ -5,6 +5,14 @@
              Title="Painel"
              BackgroundColor="#F4F6FB">
 
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sair" Clicked="OnSairClicked" />
+    </ContentPage.ToolbarItems>
+    
     <ScrollView>
         <VerticalStackLayout Padding="24,32,24,60" Spacing="20">
 

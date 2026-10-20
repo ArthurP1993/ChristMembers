@@ -5,7 +5,7 @@ namespace ChristMembers.Data;
 
 public class BancoDados
 {
-    private SQLiteAsyncConnection _banco;
+    private SQLiteAsyncConnection? _banco;
 
     private readonly SemaphoreSlim _trava = new(1, 1);
 
@@ -25,11 +25,13 @@ public class BancoDados
                 FileSystem.AppDataDirectory,
                 "ChristMembers.db3");
 
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine($"BANCO: {caminhoBanco}");
+#endif
+
             SQLiteAsyncConnection conexao = new SQLiteAsyncConnection(caminhoBanco);
 
             await conexao.CreateTableAsync<Membro>();
-            await conexao.CreateTableAsync<Visitante>();
-            await conexao.CreateTableAsync<Usuario>();
             await conexao.CreateTableAsync<Novidade>();
             await conexao.CreateTableAsync<PedidoOracao>();
 
@@ -41,6 +43,8 @@ public class BancoDados
         }
     }
 
+    // ---------- Membros ----------
+
     public async Task<List<Membro>> ListarMembros()
     {
         await Inicializar();
@@ -50,68 +54,40 @@ public class BancoDados
         return todos.Where(m => !m.Inativo).ToList();
     }
 
+    public async Task<List<Membro>> ListarMembrosInativos()
+    {
+        await Inicializar();
+
+        List<Membro> todos = await _banco!.Table<Membro>().ToListAsync();
+
+        return todos
+            .Where(m => m.Inativo)
+            .OrderBy(m => m.Nome)
+            .ToList();
+    }
+
     public async Task<int> SalvarMembro(Membro membro)
     {
         await Inicializar();
 
-        if (membro.Id == 0)
-            return await _banco.InsertAsync(membro);
+        return await _banco!.InsertAsync(membro);
+    }
 
-        return await _banco.UpdateAsync(membro);
+    public async Task<int> AtualizarMembro(Membro membro)
+    {
+        await Inicializar();
+
+        return await _banco!.UpdateAsync(membro);
     }
 
     public async Task<int> ExcluirMembro(Membro membro)
     {
         await Inicializar();
 
-        return await _banco.DeleteAsync(membro);
+        return await _banco!.DeleteAsync(membro);
     }
 
-    public async Task<List<Visitante>> ListarVisitantes()
-    {
-        await Inicializar();
-
-        List<Visitante> todos = await _banco!.Table<Visitante>().ToListAsync();
-
-        return todos.Where(v => !v.Inativo).ToList();
-    }
-
-    public async Task<int> SalvarVisitante(Visitante visitante)
-    {
-        await Inicializar();
-
-        return await _banco!.InsertAsync(visitante);
-    }
-
-    public async Task<int> ExcluirVisitante(Visitante visitante)
-    {
-        await Inicializar();
-
-        return await _banco!.DeleteAsync(visitante);
-    }
-
-    public async Task<bool> ExisteAlgumUsuario()
-    {
-        await Inicializar();
-
-        return await _banco!.Table<Usuario>().CountAsync() > 0;
-    }
-
-    public async Task<Usuario?> BuscarUsuario(string nomeUsuario)
-    {
-        await Inicializar();
-
-        return await _banco!.Table<Usuario>()
-            .Where(u => u.NomeUsuario == nomeUsuario)
-            .FirstOrDefaultAsync();
-    }
-
-    public async Task<int> SalvarUsuario(Usuario usuario)
-    {
-        await Inicializar();
-
-        return await _banco!.InsertAsync(usuario);
-    }
+    // ---------- Novidades ----------
 
     public async Task<List<Novidade>> ListarNovidades()
     {
@@ -136,19 +112,7 @@ public class BancoDados
         return await _banco!.DeleteAsync(novidade);
     }
 
-    public async Task<int> AtualizarMembro(Membro membro)
-    {
-        await Inicializar();
-
-        return await _banco!.UpdateAsync(membro);
-    }
-
-    public async Task<int> AtualizarVisitante(Visitante visitante)
-    {
-        await Inicializar();
-
-        return await _banco!.UpdateAsync(visitante);
-    }
+    // ---------- Pedidos de oração ----------
 
     public async Task<List<PedidoOracao>> ListarPedidosOracao()
     {

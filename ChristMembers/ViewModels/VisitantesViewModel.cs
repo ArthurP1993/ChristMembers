@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using ChristMembers.Helpers;
 using ChristMembers.Models;
 using ChristMembers.Services;
 
@@ -10,23 +10,34 @@ namespace ChristMembers.ViewModels;
 public class VisitantesViewModel : INotifyPropertyChanged
 {
     private readonly VisitanteService _visitanteService;
+    private int _versaoMensagemSucesso;
 
     private string _nome = string.Empty;
     private string _telefone = string.Empty;
     private string _mensagemErro = string.Empty;
     private string _mensagemSucesso = string.Empty;
-    private int _versaoMensagemSucesso;
+    private bool _enviando;
 
     public string Nome
     {
         get => _nome;
-        set => SetProperty(ref _nome, value);
+
+        set
+        {
+            if (SetProperty(ref _nome, value ?? string.Empty))
+                MensagemSucesso = string.Empty;
+        }
     }
 
     public string Telefone
     {
         get => _telefone;
-        set => SetProperty(ref _telefone, value);
+
+        set
+        {
+            if (SetProperty(ref _telefone, value ?? string.Empty))
+                MensagemSucesso = string.Empty;
+        }
     }
 
     public string MensagemErro
@@ -38,6 +49,18 @@ public class VisitantesViewModel : INotifyPropertyChanged
             if (SetProperty(ref _mensagemErro, value))
                 OnPropertyChanged(nameof(TemErro));
         }
+    }
+    private async Task MostrarSucesso(string mensagem)
+    {
+        int versao = ++_versaoMensagemSucesso;
+
+        MensagemSucesso = mensagem;
+
+        await Task.Delay(4000);
+
+        // Só esconde se não houve outro cadastro nesse intervalo
+        if (versao == _versaoMensagemSucesso)
+            MensagemSucesso = string.Empty;
     }
 
     public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
@@ -55,8 +78,6 @@ public class VisitantesViewModel : INotifyPropertyChanged
 
     public bool TemSucesso => !string.IsNullOrEmpty(MensagemSucesso);
 
-    public ObservableCollection<Visitante> Visitantes => _visitanteService.Visitantes;
-
     public ICommand CadastrarCommand { get; }
 
     public VisitantesViewModel(VisitanteService visitanteService)
@@ -70,59 +91,58 @@ public class VisitantesViewModel : INotifyPropertyChanged
     {
         MensagemSucesso = string.Empty;
 
+        if (_enviando)
+            return;
+
         List<string> erros = new();
 
         if (string.IsNullOrWhiteSpace(Nome))
             erros.Add("Informe o nome.");
+        else if (Nome.Trim().Length > 120)
+            erros.Add("O nome está muito longo.");
 
-        if (string.IsNullOrWhiteSpace(Telefone))
-            erros.Add("Informe o telefone.");
+        if (CpfValidador.SomenteDigitos(Telefone).Length < 10)
+            erros.Add("Telefone inválido. Use (11) 99999-9999.");
 
         if (erros.Count > 0)
         {
+            MensagemSucesso = string.Empty;
             MensagemErro = string.Join(Environment.NewLine, erros);
             return;
         }
 
         MensagemErro = string.Empty;
+        _enviando = true;
 
-        Visitante visitante = new Visitante
+        try
         {
-            Nome = Nome.Trim(),
-            Telefone = Telefone.Trim()
-        };
+            await _visitanteService.Cadastrar(new Visitante
+            {
+                Nome = Nome.Trim(),
+                Telefone = Telefone.Trim()
+            });
 
-        await _visitanteService.Cadastrar(visitante);
+            Visitante visitante = new Visitante
+            {
+                Nome = Nome.Trim(),
+                Telefone = Telefone.Trim()
+            };
 
-        string nomeCadastrado = visitante.Nome;
+            string nomeCadastrado = visitante.Nome;
 
-        LimparFormulario();
+            Nome = string.Empty;
+            Telefone = string.Empty;
 
-        await Shell.Current.DisplayAlert("Sucesso", "Visitante cadastrado com sucesso!", "OK");
-    }
-
-    private async Task MostrarSucesso(string mensagem)
-    {
-        int versao = ++_versaoMensagemSucesso;
-
-        MensagemSucesso = mensagem;
-
-        await Task.Delay(4000);
-
-        // Só esconde se não houve outro cadastro nesse intervalo
-        if (versao == _versaoMensagemSucesso)
-            MensagemSucesso = string.Empty;
-    }
-
-    private void LimparFormulario()
-    {
-        Nome = string.Empty;
-        Telefone = string.Empty;
-    }
-
-    public async Task Inicializar()
-    {
-        await _visitanteService.Inicializar();
+            await Shell.Current.DisplayAlert("Sucesso", "Visitante cadastrado com sucesso!", "OK");
+        }
+        catch (Exception)
+        {
+            MensagemErro = "Não foi possível enviar. Verifique a internet e tente novamente.";
+        }
+        finally
+        {
+            _enviando = false;
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

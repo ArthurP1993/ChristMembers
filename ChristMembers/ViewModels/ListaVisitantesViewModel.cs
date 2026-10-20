@@ -47,7 +47,17 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
 
     public async Task Inicializar()
     {
-        await _visitanteService.Inicializar();
+        try
+        {
+            await _visitanteService.Inicializar();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível carregar os visitantes. Verifique a internet.",
+                "OK");
+        }
 
         AplicarFiltro();
     }
@@ -83,7 +93,17 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
         if (!confirmou)
             return;
 
-        await _visitanteService.Inativar(visitante);
+        try
+        {
+            await _visitanteService.Inativar(visitante);
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Erro",
+                "Não foi possível excluir. Verifique a internet.",
+                "OK");
+        }
 
         AplicarFiltro();
     }

@@ -61,7 +61,7 @@ public partial class LoginPage : ContentPage
 
             LimparCampos();
 
-            await Shell.Current.GoToAsync(nameof(PainelAdmin));
+            await Shell.Current.GoToAsync($"../{nameof(PainelAdmin)}");
         }
         finally
         {

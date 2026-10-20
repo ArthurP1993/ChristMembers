@@ -1,54 +1,63 @@
 ﻿using System.Collections.ObjectModel;
-using ChristMembers.Data;
 using ChristMembers.Models;
+using Supabase.Postgrest;
 
 namespace ChristMembers.Services;
 
 public class VisitanteService
 {
-    private readonly BancoDados _bancoDados;
+    private readonly SupabaseServico _supabase;
 
-    public ObservableCollection<Visitante> Visitantes { get; } =
-        new ObservableCollection<Visitante>();
+    public ObservableCollection<Visitante> Visitantes { get; } = new();
 
-    public VisitanteService(BancoDados bancoDados)
+    public VisitanteService(SupabaseServico supabase)
     {
-        _bancoDados = bancoDados;
+        _supabase = supabase;
     }
 
+    // Só o admin consegue ler (as regras do banco garantem isso).
     public async Task Inicializar()
     {
-        List<Visitante> visitantes = await _bancoDados.ListarVisitantes();
+        var cliente = await _supabase.ObterAsync();
+
+        var resposta = await cliente
+            .From<Visitante>()
+            .Where(v => v.Ativo == true)
+            .Get();
 
         Visitantes.Clear();
 
-        foreach (Visitante visitante in visitantes)
+        foreach (Visitante visitante in resposta.Models.OrderByDescending(v => v.Id))
         {
             Visitantes.Add(visitante);
         }
     }
 
+    // Qualquer pessoa pode enviar, mas não consegue ler de volta.
     public async Task Cadastrar(Visitante visitante)
     {
-        visitante.DataVisita = DateTime.Today;
+        var cliente = await _supabase.ObterAsync();
 
-        await _bancoDados.SalvarVisitante(visitante);
-
-        Visitantes.Add(visitante);
-    }
-
-    public async Task Excluir(Visitante visitante)
-    {
-        await _bancoDados.ExcluirVisitante(visitante);
-
-        Visitantes.Remove(visitante);
+        await cliente
+            .From<Visitante>()
+            .Insert(visitante, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
     }
 
     public async Task Inativar(Visitante visitante)
     {
-        visitante.Inativo = true;
+        var cliente = await _supabase.ObterAsync();
 
-        await _bancoDados.AtualizarVisitante(visitante);
+        visitante.Ativo = false;
+
+        try
+        {
+            await cliente.From<Visitante>().Update(visitante);
+        }
+        catch
+        {
+            visitante.Ativo = true;
+            throw;
+        }
 
         Visitantes.Remove(visitante);
     }
