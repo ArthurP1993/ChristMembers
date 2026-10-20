@@ -159,62 +159,7 @@
                         CornerRadius="24"
                         SemanticProperties.Description="Sou visitante"
                         Clicked="OnVisitanteClicked" />
-                </Grid>
-
-                <!-- Membros -->
-                <Grid>
-                    <Border
-                        StrokeShape="RoundRectangle 24"
-                        Stroke="#E4E8F4"
-                        StrokeThickness="1"
-                        BackgroundColor="White"
-                        Padding="20">
-                        <Border.Shadow>
-                            <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
-                        </Border.Shadow>
-
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
-                            <Border
-                                Grid.Column="0"
-                                StrokeShape="Ellipse"
-                                StrokeThickness="0"
-                                BackgroundColor="#E4EBFF"
-                                WidthRequest="60"
-                                HeightRequest="60">
-                                <Label
-                                    Text="👥"
-                                    FontSize="28"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center" />
-                            </Border>
-
-                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-                                <Label
-                                    Text="Área de membros"
-                                    FontFamily="OpenSansSemibold"
-                                    FontSize="20"
-                                    TextColor="#1B2559" />
-                                <Label
-                                    Text="Entre com seu usuário e senha"
-                                    FontSize="14"
-                                    TextColor="#6B7390" />
-                            </VerticalStackLayout>
-
-                            <Label
-                                Grid.Column="2"
-                                Text="›"
-                                FontSize="34"
-                                TextColor="#9AA1BC"
-                                VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-
-                    <Button
-                        BackgroundColor="Transparent"
-                        CornerRadius="24"
-                        SemanticProperties.Description="Área de membros"
-                        Clicked="OnLoginMembrosClicked" />
-                </Grid>
+                </Grid>               
 
                 <!-- Novidades -->
                 <Grid>
