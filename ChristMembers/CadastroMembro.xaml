@@ -56,8 +56,8 @@
             <Entry Placeholder="Cidade" Text="{Binding Cidade, Mode=TwoWay}" />
             <Entry Placeholder="Estado" Text="{Binding Estado, Mode=TwoWay}" />
             <Entry Placeholder="Data de entrada (dd/mm/aaaa)"
-       Keyboard="Numeric"
-       Text="{Binding DataEntradaTexto}">
+                   Keyboard="Numeric"
+                   Text="{Binding DataEntradaTexto}">
                 <Entry.Behaviors>
                     <behaviors:MascaraDataBehavior />
                 </Entry.Behaviors>
@@ -85,11 +85,11 @@
                    Text="{Binding Observacao, Mode=TwoWay}" />
 
             <Label Text="{Binding MensagemErro}"
-       TextColor="Red"
-       IsVisible="{Binding TemErro}" />
+                   TextColor="Red"
+                   IsVisible="{Binding TemErro}" />
 
             <Button Text="Cadastrar" Command="{Binding CadastrarCommand}" />
-        
+
         </VerticalStackLayout>
     </ScrollView>
 

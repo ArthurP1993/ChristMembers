@@ -95,18 +95,18 @@ public class MembrosViewModel : INotifyPropertyChanged
     }
     public string Bairro
     {
-        get => _cpf;
-        set => SetProperty(ref _cpf, value);
+        get => _bairro;
+        set => SetProperty(ref _bairro, value);
     }
     public string Cidade
     {
-        get => _cpf;
-        set => SetProperty(ref _cpf, value);
+        get => _cidade;
+        set => SetProperty(ref _cidade, value);
     }
     public string Estado
     {
-        get => _cpf;
-        set => SetProperty(ref _cpf, value);
+        get => _estado;
+        set => SetProperty(ref _estado, value);
     }
     public string DataEntradaTexto
     {
@@ -206,14 +206,13 @@ public class MembrosViewModel : INotifyPropertyChanged
             dataEntrada = dataConvertida;
         }
 
-        if (!string.IsNullOrWhiteSpace(CPF) && !CpfValidador.EhValido(CPF))
-            return;
-
         if (erros.Count > 0)
         {
             MensagemErro = string.Join(Environment.NewLine, erros);
             return;
         }
+
+        MensagemErro = string.Empty;
 
         Membro membro = new Membro
         {
@@ -236,7 +235,11 @@ public class MembrosViewModel : INotifyPropertyChanged
 
         await _membroService.Cadastrar(membro);
 
+        string nomeCadastrado = membro.Nome.Trim();
+
         LimparFormulario();
+
+        await Shell.Current.DisplayAlert("Sucesso", $"Membro {nomeCadastrado} cadastrado com sucesso!", "OK");
     }
 
     private void LimparFormulario()
