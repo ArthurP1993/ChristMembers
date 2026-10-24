@@ -69,6 +69,16 @@
                 </Entry.Behaviors>
             </Entry>
 
+            <Picker Title="Consagração"
+                    ItemsSource="{Binding Consagracoes}"
+                    ItemDisplayBinding="{Binding Nome}"
+                    SelectedItem="{Binding ConsagracaoSelecionada}" />
+
+            <Picker Title="Setor"
+                    ItemsSource="{Binding Setores}"
+                    ItemDisplayBinding="{Binding Nome}"
+                    SelectedItem="{Binding SetorSelecionado}" />
+
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                 <Label Text="Foi batizado?"
                        FontAttributes="Bold"

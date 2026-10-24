@@ -75,12 +75,12 @@ public class ListaPedidosOracaoViewModel : INotifyPropertyChanged
             .Concat(CategoriasOracao.Todas)
             .ToList();
 
-        AlterarStatusCommand = new Command<PedidoOracao>(async p => await AlterarStatus(p));
-        SalvarAnotacaoCommand = new Command<PedidoOracao>(async p => await SalvarAnotacao(p));
-        ArquivarCommand = new Command<PedidoOracao>(async p => await Arquivar(p));
+        AlterarStatusCommand = new Command<PedidoOracao>(async p => await Executar(() => AlterarStatus(p)));
+        SalvarAnotacaoCommand = new Command<PedidoOracao>(async p => await Executar(() => SalvarAnotacao(p)));
+        AlternarMuralCommand = new Command<PedidoOracao>(async p => await Executar(() => AlternarMural(p)));
+        ArquivarCommand = new Command<PedidoOracao>(async p => await Executar(() => Arquivar(p)));
         LigarCommand = new Command<PedidoOracao>(async p => await Ligar(p));
         WhatsAppCommand = new Command<PedidoOracao>(async p => await AbrirWhatsApp(p));
-        AlternarMuralCommand = new Command<PedidoOracao>(async p => await AlternarMural(p));
     }
 
     public async Task Inicializar()
@@ -91,7 +91,17 @@ public class ListaPedidosOracaoViewModel : INotifyPropertyChanged
             return;
         }
 
-        await _pedidoService.Inicializar();
+        try
+        {
+            await _pedidoService.Inicializar();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível carregar os pedidos. Verifique a internet.",
+                "OK");
+        }
 
         AplicarFiltro();
     }
@@ -252,5 +262,20 @@ public class ListaPedidosOracaoViewModel : INotifyPropertyChanged
         await _pedidoService.AlternarMural(pedido);
 
         RefletirNaTela(pedido);
+    }
+
+    private static async Task Executar(Func<Task> acao)
+    {
+        try
+        {
+            await acao();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Erro",
+                "Não foi possível concluir. Verifique a internet e tente novamente.",
+                "OK");
+        }
     }
 }

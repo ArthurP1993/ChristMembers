@@ -47,7 +47,17 @@ public class ListaMembrosViewModel : INotifyPropertyChanged
 
     public async Task Inicializar()
     {
-        await _membroService.Inicializar();
+        try
+        {
+            await _membroService.Inicializar();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível carregar os membros. Verifique a internet.",
+                "OK");
+        }
 
         AplicarFiltro();
     }
@@ -83,7 +93,17 @@ public class ListaMembrosViewModel : INotifyPropertyChanged
         if (!confirmou)
             return;
 
-        await _membroService.Inativar(membro);
+        try
+        {
+            await _membroService.Inativar(membro);
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Erro",
+                "Não foi possível excluir. Verifique a internet.",
+                "OK");
+        }
 
         AplicarFiltro();
     }

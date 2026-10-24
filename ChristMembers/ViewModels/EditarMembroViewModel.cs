@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+﻿using ChristMembers.Helpers;
+using ChristMembers.Models;
+using ChristMembers.Services;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using ChristMembers.Helpers;
-using ChristMembers.Models;
-using ChristMembers.Services;
 
 namespace ChristMembers.ViewModels;
 
@@ -161,16 +162,37 @@ public class EditarMembroViewModel : INotifyPropertyChanged
         }
     }
 
+    private readonly ListasService _listas;
+    private bool _listasCarregadas;
+    private OpcaoLista? _consagracaoSelecionada;
+    private OpcaoLista? _setorSelecionado;
+
+    public ObservableCollection<OpcaoLista> Consagracoes { get; } = new();
+    public ObservableCollection<OpcaoLista> Setores { get; } = new();
+
+    public OpcaoLista? ConsagracaoSelecionada
+    {
+        get => _consagracaoSelecionada;
+        set => SetProperty(ref _consagracaoSelecionada, value);
+    }
+
+    public OpcaoLista? SetorSelecionado
+    {
+        get => _setorSelecionado;
+        set => SetProperty(ref _setorSelecionado, value);
+    }
+
     public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
 
     public ICommand SalvarCommand { get; }
 
     public ICommand CancelarCommand { get; }
 
-    public EditarMembroViewModel(MembroService membroService, AuthService auth)
+    public EditarMembroViewModel(MembroService membroService, AuthService auth, ListasService listas)
     {
         _membroService = membroService;
         _auth = auth;
+        _listas = listas;
 
         SalvarCommand = new Command(async () => await Salvar());
         CancelarCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
@@ -201,6 +223,8 @@ public class EditarMembroViewModel : INotifyPropertyChanged
         _dataEntradaTexto = FormatarData(entrada);
 
         _mensagemErro = string.Empty;
+
+        SelecionarListas();
 
         OnPropertyChanged(string.Empty);
     }
@@ -267,6 +291,12 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             return;
         }
 
+        if (_listasCarregadas)
+        {
+            _membro.IdConsagracao = ConsagracaoSelecionada?.Id;
+            _membro.IdSetor = SetorSelecionado?.Id;
+        }
+
         MensagemErro = string.Empty;
         _salvando = true;
 
@@ -275,7 +305,7 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             _membro.Nome = Nome.Trim();
             _membro.Telefone = Telefone.Trim();
             _membro.CPF = CPF.Trim();
-            _membro.DataNascimento = nascimento ?? default(DateTime);
+            _membro.DataNascimento = nascimento;
             _membro.Email = Email.Trim();
             _membro.CEP = CEP.Trim();
             _membro.Endereco = Endereco.Trim();
@@ -284,7 +314,7 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             _membro.Bairro = Bairro.Trim();
             _membro.Cidade = Cidade.Trim();
             _membro.Estado = Estado.Trim();
-            _membro.DataEntrada = entrada ?? default(DateTime);
+            _membro.DataEntrada = entrada;
             _membro.FoiBatizado = _foiBatizado;
             _membro.Observacao = Observacao.Trim();
 
@@ -337,5 +367,51 @@ public class EditarMembroViewModel : INotifyPropertyChanged
         campo = valor;
         OnPropertyChanged(propriedade);
         return true;
+    }
+
+    public async Task CarregarListasAsync()
+    {
+        if (_listasCarregadas)
+            return;
+
+        try
+        {
+            List<Consagracao> consagracoes = await _listas.ObterConsagracoesAsync();
+            List<Setor> setores = await _listas.ObterSetoresAsync();
+
+            Consagracoes.Clear();
+            Consagracoes.Add(OpcaoLista.Nenhuma());
+
+            foreach (Consagracao c in consagracoes)
+                Consagracoes.Add(new OpcaoLista { Id = c.Id, Nome = c.Descricao });
+
+            Setores.Clear();
+            Setores.Add(OpcaoLista.Nenhuma());
+
+            foreach (Setor s in setores)
+                Setores.Add(new OpcaoLista { Id = s.Id, Nome = s.Descricao });
+
+            _listasCarregadas = true;
+        }
+        catch (Exception)
+        {
+            MensagemErro = "Não foi possível carregar as listas de consagração e setor.";
+        }
+
+        SelecionarListas();
+    }
+
+    private void SelecionarListas()
+    {
+        if (_membro == null || !_listasCarregadas)
+            return;
+
+        ConsagracaoSelecionada =
+            Consagracoes.FirstOrDefault(o => o.Id == _membro.IdConsagracao)
+            ?? Consagracoes.FirstOrDefault();
+
+        SetorSelecionado =
+            Setores.FirstOrDefault(o => o.Id == _membro.IdSetor)
+            ?? Setores.FirstOrDefault();
     }
 }

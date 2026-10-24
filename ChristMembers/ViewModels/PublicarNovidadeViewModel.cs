@@ -157,13 +157,13 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
 
             await Shell.Current.GoToAsync("..");
         }
+        catch (InvalidOperationException ex)
+        {
+            MensagemErro = ex.Message;
+        }
         catch (Exception)
         {
-            MensagemErro = "Não foi possível publicar. Tente novamente.";
-        }
-        finally
-        {
-            _publicando = false;
+            MensagemErro = "Não foi possível publicar. Verifique a internet e tente novamente.";
         }
     }
 

@@ -81,7 +81,7 @@
             <VerticalStackLayout Spacing="8"
                                  HorizontalOptions="Fill">
 
-                <Label Text="Ainda não tem cadastro?"
+                <Label Text="Ainda não tem conta?"
                        FontSize="14"
                        TextColor="#6B7390"
                        HorizontalOptions="Center" />

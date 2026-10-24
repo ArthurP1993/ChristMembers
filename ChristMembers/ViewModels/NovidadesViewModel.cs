@@ -26,7 +26,17 @@ public class NovidadesViewModel
 
     public async Task Inicializar()
     {
-        await _novidadeService.Inicializar();
+        try
+        {
+            await _novidadeService.Inicializar();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível carregar as novidades. Verifique a internet.",
+                "OK");
+        }
     }
 
     private async Task Excluir(Novidade? novidade)
@@ -43,6 +53,16 @@ public class NovidadesViewModel
         if (!confirmou)
             return;
 
-        await _novidadeService.Excluir(novidade);
+        try
+        {
+            await _novidadeService.Excluir(novidade);
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Erro",
+                "Não foi possível remover. Verifique a internet.",
+                "OK");
+        }
     }
 }

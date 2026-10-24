@@ -1,39 +1,50 @@
-﻿using SQLite;
-using System.Globalization;
+﻿using System.Globalization;
+using ChristMembers.Config;
+using Newtonsoft.Json;
+using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 namespace ChristMembers.Models;
 
-public class Novidade
+[Table("tb_Novidade")]
+public class Novidade : BaseModel
 {
-    [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    [PrimaryKey("id_Novidade", false)]
+    public long Id { get; set; }
 
+    [Column("ds_Titulo")]
     public string Titulo { get; set; } = string.Empty;
 
+    [Column("ds_Descricao")]
     public string Descricao { get; set; } = string.Empty;
 
+    [Column("ds_NomeFoto")]
     public string NomeArquivoFoto { get; set; } = string.Empty;
 
+    [Column("dt_DataPublicacao", ignoreOnInsert: true, ignoreOnUpdate: true)]
     public DateTime DataPublicacao { get; set; }
 
+    [Column("dt_DataEvento")]
     public DateTime? DataEvento { get; set; }
 
-    [Ignore]
+    // ---------- Apenas para a tela (não são colunas) ----------
+
+    [JsonIgnore]
     public bool TemFoto => !string.IsNullOrEmpty(NomeArquivoFoto);
 
-    [Ignore]
+    [JsonIgnore]
     public string CaminhoFoto => TemFoto
-        ? Path.Combine(FileSystem.AppDataDirectory, "novidades", NomeArquivoFoto)
+        ? $"{SupabaseConfig.Url.TrimEnd('/')}/storage/v1/object/public/novidades/{NomeArquivoFoto}"
         : string.Empty;
 
-    [Ignore]
+    [JsonIgnore]
     public bool Expirada =>
         DataEvento.HasValue && DataEvento.Value.Date < DateTime.Today;
 
-    [Ignore]
+    [JsonIgnore]
     public bool TemDataEvento => DataEvento.HasValue;
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoEvento
     {
         get

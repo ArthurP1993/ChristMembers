@@ -1,3 +1,4 @@
+using ChristMembers.Helpers;
 using ChristMembers.Services;
 
 namespace ChristMembers;
@@ -5,13 +6,15 @@ namespace ChristMembers;
 public partial class LoginPage : ContentPage
 {
     private readonly AuthService _auth;
+    private readonly MembroService _membros;
     private bool _entrando;
 
-    public LoginPage(AuthService auth)
+    public LoginPage(AuthService auth, MembroService membros)
     {
         InitializeComponent();
 
         _auth = auth;
+        _membros = membros;
     }
 
     protected override async void OnAppearing()
@@ -51,17 +54,18 @@ public partial class LoginPage : ContentPage
                 return;
             }
 
-            if (_auth.UsuarioLogado?.Cargo != AuthService.CargoAdmin)
+            LimparCampos();
+
+            try
+            {
+                await AcessoHelper.EntrarNaAreaAsync(_auth, _membros, 1);
+            }
+            catch (Exception)
             {
                 await _auth.SairAsync();
 
-                MostrarMensagem("Este acesso não tem permissão de administrador.");
-                return;
+                MostrarMensagem("Não foi possível carregar o seu cadastro. Verifique a internet.");
             }
-
-            LimparCampos();
-
-            await Shell.Current.GoToAsync($"../{nameof(PainelAdmin)}");
         }
         finally
         {
@@ -91,7 +95,7 @@ public partial class LoginPage : ContentPage
 
     private async void OnCadastrarClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(CadastroMembro));
+        await Shell.Current.GoToAsync(nameof(CriarContaPage));
     }
 
     private void MostrarMensagem(string texto)

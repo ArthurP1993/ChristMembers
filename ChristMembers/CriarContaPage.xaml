@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.CriarContaPage"
+             Title="Criar conta"
+             BackgroundColor="#F4F6FB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,32,24,60" Spacing="20">
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Criar conta"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="30"
+                       TextColor="#1B2559"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="Crie o seu acesso. Depois de entrar, você completa os seus dados de membro."
+                       FontSize="16"
+                       LineHeight="1.4"
+                       TextColor="#6B7390" />
+            </VerticalStackLayout>
+
+            <Border StrokeShape="RoundRectangle 24"
+                    Stroke="#E4E8F4"
+                    StrokeThickness="1"
+                    BackgroundColor="White"
+                    Padding="20">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Entry x:Name="CampoEmail"
+                           Placeholder="E-mail"
+                           Keyboard="Email"
+                           TextColor="#1B2559"
+                           PlaceholderColor="#9AA1BC"
+                           IsSpellCheckEnabled="False" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
+                        <Entry x:Name="CampoSenha"
+                               Grid.Column="0"
+                               Placeholder="Senha (mínimo 8 caracteres)"
+                               IsPassword="True"
+                               TextColor="#1B2559"
+                               PlaceholderColor="#9AA1BC" />
+
+                        <ImageButton x:Name="BotaoOlho"
+                                     Grid.Column="1"
+                                     Source="eye.png"
+                                     WidthRequest="44"
+                                     HeightRequest="44"
+                                     Padding="10"
+                                     BackgroundColor="Transparent"
+                                     VerticalOptions="Center"
+                                     SemanticProperties.Description="Mostrar ou ocultar senha"
+                                     Clicked="OnMostrarSenhaClicked" />
+                    </Grid>
+
+                    <Entry x:Name="CampoConfirmar"
+                           Placeholder="Confirmar senha"
+                           IsPassword="True"
+                           TextColor="#1B2559"
+                           PlaceholderColor="#9AA1BC" />
+
+                    <Label x:Name="Mensagem"
+                           TextColor="#C62828"
+                           FontSize="14"
+                           IsVisible="False" />
+
+                    <Label x:Name="Aviso"
+                           TextColor="#2E7D5B"
+                           FontSize="14"
+                           LineHeight="1.35"
+                           IsVisible="False" />
+
+                    <Button x:Name="BotaoCriar"
+                            Text="Criar conta"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="17"
+                            TextColor="White"
+                            BackgroundColor="#1B2F7A"
+                            CornerRadius="16"
+                            HeightRequest="52"
+                            Clicked="OnCriarClicked" />
+
+                    <Button Text="Já tenho conta"
+                            FontSize="14"
+                            TextColor="#6B7390"
+                            BackgroundColor="Transparent"
+                            Clicked="OnVoltarClicked" />
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

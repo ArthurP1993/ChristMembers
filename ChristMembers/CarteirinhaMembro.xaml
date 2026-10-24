@@ -115,7 +115,8 @@
             </Border>
 
             <!-- Editar -->
-            <Button Text="Editar cadastro"
+            <Button x:Name="BotaoEditar"
+                    Text="Editar cadastro"
                     FontFamily="OpenSansSemibold"
                     FontSize="16"
                     TextColor="#1B2F7A"

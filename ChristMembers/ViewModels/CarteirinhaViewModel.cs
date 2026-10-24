@@ -39,9 +39,13 @@ public class CarteirinhaViewModel
         DateTime? entrada = membro.DataEntrada;
         DateTime? nascimento = membro.DataNascimento;
 
-        MembroDesde = DataValida(entrada)
+        string desde = DataValida(entrada)
             ? $"Membro desde {entrada!.Value.ToString("MMMM 'de' yyyy", PtBr)}"
             : "Membro";
+
+        MembroDesde = string.IsNullOrWhiteSpace(membro.NomeConsagracao)
+            ? desde
+            : $"{membro.NomeConsagracao} · {desde}";
 
         if (membro.FoiBatizado == true)
         {
@@ -80,6 +84,9 @@ public class CarteirinhaViewModel
 
         if (DataValida(entrada))
             Adicionar("Entrada na igreja", entrada!.Value.ToString("dd/MM/yyyy"));
+
+        Adicionar("Consagração", membro.NomeConsagracao);
+        Adicionar("Setor", membro.NomeSetor);
 
         Adicionar("Observação", membro.Observacao);
     }

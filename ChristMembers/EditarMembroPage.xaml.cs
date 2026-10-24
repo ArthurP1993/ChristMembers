@@ -23,4 +23,11 @@ public partial class EditarMembroPage : ContentPage, IQueryAttributable
             _viewModel.Carregar(membro);
         }
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await _viewModel.CarregarListasAsync();
+    }
 }

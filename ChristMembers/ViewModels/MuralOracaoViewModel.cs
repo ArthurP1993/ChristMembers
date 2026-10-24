@@ -24,9 +24,23 @@ public class MuralOracaoViewModel
 
     public async Task Inicializar()
     {
-        HashSet<int> feitas = LerOracoesFeitas();
+        HashSet<long> feitas = LerOracoesFeitas();
 
-        List<PedidoOracao> mural = await _pedidoService.ListarMural();
+        List<PedidoOracao> mural;
+
+        try
+        {
+            mural = await _pedidoService.ListarMural();
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível carregar o mural. Verifique a internet.",
+                "OK");
+
+            return;
+        }
 
         Pedidos.Clear();
 
@@ -43,7 +57,21 @@ public class MuralOracaoViewModel
         if (pedido == null || pedido.JaOrei)
             return;
 
-        int total = await _pedidoService.RegistrarOracao(pedido.Id);
+        int total;
+
+        try
+        {
+            total = await _pedidoService.RegistrarOracao(pedido.Id);
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert(
+                "Sem conexão",
+                "Não foi possível registrar agora. Tente novamente.",
+                "OK");
+
+            return;
+        }
 
         if (total == 0)
         {
@@ -62,20 +90,20 @@ public class MuralOracaoViewModel
             Pedidos[indice] = pedido;
     }
 
-    private static HashSet<int> LerOracoesFeitas()
+    private static HashSet<long> LerOracoesFeitas()
     {
         string texto = Preferences.Default.Get(ChavePreferencia, string.Empty);
 
         return texto
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(t => int.TryParse(t, out int id) ? id : 0)
+            .Select(t => long.TryParse(t, out long id) ? id : 0)
             .Where(id => id > 0)
             .ToHashSet();
     }
 
-    private static void SalvarOracaoFeita(int id)
+    private static void SalvarOracaoFeita(long id)
     {
-        HashSet<int> feitas = LerOracoesFeitas();
+        HashSet<long> feitas = LerOracoesFeitas();
 
         feitas.Add(id);
 

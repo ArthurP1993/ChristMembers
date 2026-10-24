@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using Newtonsoft.Json;
+using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 namespace ChristMembers.Models;
 
@@ -14,43 +16,74 @@ public static class CategoriasOracao
     };
 }
 
-public class PedidoOracao
+[Table("tb_PedidoOracao")]
+public class PedidoOracao : BaseModel
 {
-    [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    [PrimaryKey("id_PedidoOracao", false)]
+    public long Id { get; set; }
 
+    [Column("ds_Nome")]
     public string Nome { get; set; } = string.Empty;
 
+    [Column("fl_Anonimo")]
     public bool Anonimo { get; set; }
 
+    [Column("ds_Telefone")]
     public string Telefone { get; set; } = string.Empty;
 
-    public string Categoria { get; set; } = string.Empty;
+    [Column("id_Categoria")]
+    public int IdCategoria { get; set; }
 
+    [Column("ds_Texto")]
     public string Texto { get; set; } = string.Empty;
 
+    [Column("fl_PermiteMural")]
     public bool PermiteMural { get; set; }
 
-    public StatusPedido Status { get; set; } = StatusPedido.Novo;
+    [Column("id_Status")]
+    public int IdStatus { get; set; }
 
+    [Column("ds_Anotacao")]
     public string Anotacao { get; set; } = string.Empty;
 
+    [Column("dt_Pedido", ignoreOnInsert: true, ignoreOnUpdate: true)]
     public DateTime DataPedido { get; set; }
 
+    [Column("fl_Arquivado")]
     public bool Arquivado { get; set; }
 
+    [Column("nu_Oracoes", ignoreOnUpdate: true)]
     public int Oracoes { get; set; }
 
+    [Column("fl_AprovadoMural")]
     public bool AprovadoMural { get; set; }
 
-    [Ignore]
+    // ---------- Apenas para a tela (não são colunas) ----------
+
+    [JsonIgnore]
+    public string Categoria { get; set; } = string.Empty;
+
+    [JsonIgnore]
+    public StatusPedido Status
+    {
+        get => (StatusPedido)IdStatus;
+        set => IdStatus = (int)value;
+    }
+
+    [JsonIgnore]
+    public bool JaOrei { get; set; }
+
+    [JsonIgnore]
     public string NomeExibicao =>
         Anonimo || string.IsNullOrWhiteSpace(Nome) ? "Anônimo" : Nome;
 
-    [Ignore]
+    [JsonIgnore]
     public bool TemTelefone => !string.IsNullOrWhiteSpace(Telefone);
 
-    [Ignore]
+    [JsonIgnore]
+    public string DataTexto => DataPedido.ToString("dd/MM/yyyy");
+
+    [JsonIgnore]
     public string TextoStatus => Status switch
     {
         StatusPedido.Novo => "🆕 Novo",
@@ -58,7 +91,7 @@ public class PedidoOracao
         _ => "✅ Respondido"
     };
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoProximaAcao => Status switch
     {
         StatusPedido.Novo => "Marcar em oração",
@@ -66,7 +99,7 @@ public class PedidoOracao
         _ => "Reabrir pedido"
     };
 
-    [Ignore]
+    [JsonIgnore]
     public StatusPedido ProximoStatus => Status switch
     {
         StatusPedido.Novo => StatusPedido.EmOracao,
@@ -74,19 +107,13 @@ public class PedidoOracao
         _ => StatusPedido.Novo
     };
 
-    [Ignore]
-    public string DataTexto => DataPedido.ToString("dd/MM/yyyy");
-
-    [Ignore]
-    public bool JaOrei { get; set; }
-
-    [Ignore]
+    [JsonIgnore]
     public bool PodeOrar => !JaOrei;
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoBotaoOrar => JaOrei ? "Você está orando ✓" : "Estou orando 🙏";
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoOracoes => Oracoes switch
     {
         0 => "Seja a primeira pessoa a orar",
@@ -94,10 +121,10 @@ public class PedidoOracao
         _ => $"{Oracoes} pessoas orando"
     };
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoAcaoMural => AprovadoMural ? "Retirar do mural" : "Publicar no mural";
 
-    [Ignore]
+    [JsonIgnore]
     public string TextoSituacaoMural => AprovadoMural
         ? "🌐 Publicado no mural"
         : "🌐 Autorizou o mural (aguardando sua aprovação)";
