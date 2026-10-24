@@ -14,9 +14,20 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
     private readonly AuthService _auth;
 
     private string _textoBusca = string.Empty;
+    private string _statusFiltro = "Todos";
     private string _resumo = string.Empty;
 
     public ObservableCollection<Visitante> Visitantes { get; } = new();
+
+    public List<string> OpcoesStatus { get; } = new()
+    {
+        "Todos",
+        "Novos",
+        "Contatados",
+        "Voltaram"
+    };
+
+    public bool EhAdmin => _auth.UsuarioLogado?.Cargo == AuthService.CargoAdmin;
 
     public string TextoBusca
     {
@@ -29,12 +40,26 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
         }
     }
 
+    public string StatusFiltro
+    {
+        get => _statusFiltro;
+
+        set
+        {
+            if (SetProperty(ref _statusFiltro, value ?? "Todos"))
+                AplicarFiltro();
+        }
+    }
+
     public string Resumo
     {
         get => _resumo;
         private set => SetProperty(ref _resumo, value);
     }
 
+    public ICommand AlterarStatusCommand { get; }
+    public ICommand SalvarAnotacaoCommand { get; }
+    public ICommand WhatsAppCommand { get; }
     public ICommand ExcluirCommand { get; }
 
     public ListaVisitantesViewModel(VisitanteService visitanteService, AuthService auth)
@@ -42,11 +67,20 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
         _visitanteService = visitanteService;
         _auth = auth;
 
-        ExcluirCommand = new Command<Visitante>(async visitante => await Excluir(visitante));
+        AlterarStatusCommand = new Command<Visitante>(async v => await Executar(() => AlterarStatus(v)));
+        SalvarAnotacaoCommand = new Command<Visitante>(async v => await Executar(() => SalvarAnotacao(v)));
+        ExcluirCommand = new Command<Visitante>(async v => await Executar(() => Excluir(v)));
+        WhatsAppCommand = new Command<Visitante>(async v => await AbrirWhatsApp(v));
     }
 
     public async Task Inicializar()
     {
+        if (!EhAdmin)
+        {
+            await Shell.Current.GoToAsync("..");
+            return;
+        }
+
         try
         {
             await _visitanteService.Inicializar();
@@ -62,26 +96,84 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
         AplicarFiltro();
     }
 
+    private bool Combina(Visitante visitante)
+    {
+        bool combinaStatus = StatusFiltro switch
+        {
+            "Novos" => visitante.Status == StatusVisitante.Novo,
+            "Contatados" => visitante.Status == StatusVisitante.Contatado,
+            "Voltaram" => visitante.Status == StatusVisitante.Voltou,
+            _ => true
+        };
+
+        return combinaStatus
+            && BuscaHelper.Combina(TextoBusca, visitante.Nome, visitante.Telefone);
+    }
+
     private void AplicarFiltro()
     {
         Visitantes.Clear();
 
-        foreach (Visitante visitante in _visitanteService.Visitantes
-                     .Where(v => BuscaHelper.Combina(TextoBusca, v.Nome, v.Telefone)))
+        foreach (Visitante visitante in _visitanteService.Visitantes.Where(Combina))
         {
             Visitantes.Add(visitante);
         }
 
-        int total = _visitanteService.Visitantes.Count;
+        AtualizarResumo();
+    }
 
-        Resumo = string.IsNullOrWhiteSpace(TextoBusca)
-            ? $"Total: {total}"
-            : $"Exibindo {Visitantes.Count} de {total}";
+    private void AtualizarResumo()
+    {
+        int total = _visitanteService.Visitantes.Count;
+        int novos = _visitanteService.Visitantes.Count(v => v.Status == StatusVisitante.Novo);
+
+        bool filtrando = !string.IsNullOrWhiteSpace(TextoBusca) || StatusFiltro != "Todos";
+
+        Resumo = filtrando
+            ? $"Exibindo {Visitantes.Count} de {total}"
+            : $"Total: {total} · {novos} novo(s)";
+    }
+
+    private void RefletirNaTela(Visitante visitante)
+    {
+        int indice = Visitantes.IndexOf(visitante);
+
+        if (indice >= 0)
+        {
+            if (Combina(visitante))
+                Visitantes[indice] = visitante;
+            else
+                Visitantes.RemoveAt(indice);
+        }
+
+        AtualizarResumo();
+    }
+
+    private async Task AlterarStatus(Visitante? visitante)
+    {
+        if (visitante == null || !EhAdmin)
+            return;
+
+        await _visitanteService.AlterarStatus(visitante, visitante.ProximoStatus);
+
+        RefletirNaTela(visitante);
+    }
+
+    private async Task SalvarAnotacao(Visitante? visitante)
+    {
+        if (visitante == null || !EhAdmin)
+            return;
+
+        await _visitanteService.SalvarAnotacao(visitante, visitante.Anotacao ?? string.Empty);
+
+        RefletirNaTela(visitante);
+
+        await Shell.Current.DisplayAlert("Pronto", "Anotação salva.", "OK");
     }
 
     private async Task Excluir(Visitante? visitante)
     {
-        if (visitante == null || _auth.UsuarioLogado?.Cargo != AuthService.CargoAdmin)
+        if (visitante == null || !EhAdmin)
             return;
 
         bool confirmou = await Shell.Current.DisplayAlert(
@@ -93,19 +185,52 @@ public class ListaVisitantesViewModel : INotifyPropertyChanged
         if (!confirmou)
             return;
 
+        await _visitanteService.Inativar(visitante);
+
+        Visitantes.Remove(visitante);
+
+        AtualizarResumo();
+    }
+
+    private async Task AbrirWhatsApp(Visitante? visitante)
+    {
+        if (visitante == null || !EhAdmin || !visitante.PodeWhatsApp)
+            return;
+
+        string numero = CpfValidador.SomenteDigitos(visitante.Telefone);
+
+        if (numero.Length is 10 or 11)
+            numero = "55" + numero;
+
+        string texto =
+            $"Olá, {visitante.PrimeiroNome}! 🙏 " +
+            "Foi uma alegria receber você na nossa igreja. " +
+            "Você é sempre bem-vindo(a)! Se precisar de algo, conte com a gente.";
+
         try
         {
-            await _visitanteService.Inativar(visitante);
+            await Launcher.Default.OpenAsync(
+                new Uri($"https://wa.me/{numero}?text={Uri.EscapeDataString(texto)}"));
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert("Aviso", "Não foi possível abrir o WhatsApp.", "OK");
+        }
+    }
+
+    private static async Task Executar(Func<Task> acao)
+    {
+        try
+        {
+            await acao();
         }
         catch (Exception)
         {
             await Shell.Current.DisplayAlert(
                 "Erro",
-                "Não foi possível excluir. Verifique a internet.",
+                "Não foi possível concluir. Verifique a internet e tente novamente.",
                 "OK");
         }
-
-        AplicarFiltro();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

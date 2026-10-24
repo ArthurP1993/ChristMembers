@@ -15,10 +15,21 @@
                    PlaceholderColor="#9AA1BC"
                    BackgroundColor="White" />
 
-        <Label Grid.Row="1"
-               Text="{Binding Resumo}"
-               FontSize="15"
-               TextColor="#6B7390" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <Label Grid.Column="0"
+                   Text="{Binding Resumo}"
+                   FontSize="14"
+                   TextColor="#6B7390"
+                   VerticalOptions="Center" />
+
+            <Picker Grid.Column="1"
+                    Title="Status"
+                    WidthRequest="150"
+                    ItemsSource="{Binding OpcoesStatus}"
+                    SelectedItem="{Binding StatusFiltro}"
+                    TextColor="#1B2559"
+                    TitleColor="#9AA1BC" />
+        </Grid>
 
         <CollectionView Grid.Row="2" ItemsSource="{Binding Visitantes}">
 
@@ -27,7 +38,7 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.EmptyView>
-                <Label Text="Nenhum visitante cadastrado ainda."
+                <Label Text="Nenhum visitante encontrado."
                        FontSize="16"
                        TextColor="#6B7390"
                        HorizontalOptions="Center"
@@ -42,32 +53,98 @@
                             BackgroundColor="White"
                             Padding="18">
 
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding Nome}"
-                                   FontFamily="OpenSansSemibold"
-                                   FontSize="18"
-                                   TextColor="#1B2559" />
+                        <VerticalStackLayout Spacing="10">
 
-                            <Label Text="{Binding Telefone}"
-                                   FontSize="14"
-                                   TextColor="#6B7390" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                    <Label Text="{Binding Nome}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="18"
+                                           TextColor="#1B2559" />
+                                    <Label Text="{Binding Telefone}"
+                                           FontSize="14"
+                                           TextColor="#6B7390" />
+                                </VerticalStackLayout>
+
+                                <Border Grid.Column="1"
+                                        StrokeShape="RoundRectangle 12"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#EEF2FF"
+                                        Padding="10,5"
+                                        VerticalOptions="Start">
+                                    <Label Text="{Binding TextoStatus}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="12"
+                                           TextColor="#3C4A7D" />
+                                </Border>
+                            </Grid>
 
                             <Label Text="{Binding DataVisita, StringFormat='Visita em {0:dd/MM/yyyy}'}"
                                    FontSize="13"
-                                   TextColor="#B07A12"
-                                   Margin="0,6,0,0" />
+                                   TextColor="#B07A12" />
 
-                            <Button Text="Excluir"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=ExcluirCommand}"
-                                    CommandParameter="{Binding .}"
+                            <Label Text="{Binding DataContato, StringFormat='Contatado em {0:dd/MM/yyyy}'}"
+                                   IsVisible="{Binding TemContato}"
+                                   FontSize="13"
+                                   TextColor="#2E7D5B" />
+
+                            <Button Text="Enviar boas-vindas no WhatsApp"
+                                    IsVisible="{Binding PodeWhatsApp}"
+                                    FontSize="13"
+                                    TextColor="#1F6B47"
+                                    BackgroundColor="#E3F6EC"
+                                    CornerRadius="12"
+                                    HeightRequest="40"
+                                    HorizontalOptions="Start"
+                                    Padding="16,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=WhatsAppCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <Editor Placeholder="Anotação da liderança (ex.: ligou na quarta)"
+                                    AutoSize="TextChanges"
+                                    MaxLength="300"
                                     FontSize="14"
-                                    TextColor="#C62828"
-                                    BackgroundColor="#FDECEC"
-                                    CornerRadius="14"
-                                    HeightRequest="42"
-                                    Padding="18,0"
-                                    HorizontalOptions="End"
-                                    Margin="0,8,0,0" />
+                                    TextColor="#1B2559"
+                                    PlaceholderColor="#9AA1BC"
+                                    Text="{Binding Anotacao, Mode=TwoWay}" />
+
+                            <Button Text="Salvar anotação"
+                                    FontSize="13"
+                                    TextColor="#1B2F7A"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="#C9D3F5"
+                                    BorderWidth="1"
+                                    CornerRadius="12"
+                                    HeightRequest="38"
+                                    HorizontalOptions="Start"
+                                    Padding="16,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=SalvarAnotacaoCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Button Grid.Column="0"
+                                        Text="{Binding TextoProximaAcao}"
+                                        FontFamily="OpenSansSemibold"
+                                        FontSize="14"
+                                        TextColor="White"
+                                        BackgroundColor="#1B2F7A"
+                                        CornerRadius="14"
+                                        HeightRequest="44"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=AlterarStatusCommand}"
+                                        CommandParameter="{Binding .}" />
+
+                                <Button Grid.Column="1"
+                                        Text="Excluir"
+                                        FontSize="14"
+                                        TextColor="#C62828"
+                                        BackgroundColor="#FDECEC"
+                                        CornerRadius="14"
+                                        HeightRequest="44"
+                                        Padding="16,0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=ExcluirCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
