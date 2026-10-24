@@ -79,6 +79,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="AniversariantesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CadastroVisitante.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

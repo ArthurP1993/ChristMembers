@@ -69,4 +69,8 @@ public partial class PainelAdmin : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(ListaPedidosOracaoPage));
     }
+    private async void OnAniversariantesClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(AniversariantesPage));
+    }
 }
