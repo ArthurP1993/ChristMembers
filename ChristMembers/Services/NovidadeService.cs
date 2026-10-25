@@ -74,7 +74,7 @@ public class NovidadeService
         if (foto != null)
             nomeArquivo = await EnviarFoto(cliente, foto);
 
-        Novidade novidade = new()
+        NovidadeGravacao novidade = new()
         {
             Titulo = titulo.Trim(),
             Descricao = descricao.Trim(),
@@ -84,7 +84,7 @@ public class NovidadeService
 
         try
         {
-            await cliente.From<Novidade>().Insert(novidade);
+            await cliente.From<NovidadeGravacao>().Insert(novidade);
         }
         catch
         {

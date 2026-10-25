@@ -27,7 +27,8 @@ public class Novidade : BaseModel
     [Column("dt_DataEvento")]
     public DateTime? DataEvento { get; set; }
 
-    // ---------- Apenas para a tela (não são colunas) ----------
+    // ---------- Apenas para a tela (NÃO são colunas) ----------
+    // Toda propriedade sem [Column] precisa de [JsonIgnore].
 
     [JsonIgnore]
     public bool TemFoto => !string.IsNullOrEmpty(NomeArquivoFoto);

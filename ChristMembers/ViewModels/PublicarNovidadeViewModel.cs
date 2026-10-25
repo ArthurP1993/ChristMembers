@@ -107,7 +107,7 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
     {
         if (_publicando)
             return;
-
+            
         if (_auth.UsuarioLogado?.Cargo != AuthService.CargoAdmin)
         {
             MensagemErro = "Apenas o administrador pode publicar novidades.";
