@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.ConfirmadosPage"
+             Title="Quem vai"
+             BackgroundColor="#F4F6FB">
+
+    <Grid RowDefinitions="Auto,*" Padding="20,16,20,0" RowSpacing="12">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="6">
+            <Label Text="{Binding Titulo}"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="22"
+                   TextColor="#1B2559"
+                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="{Binding Resumo}"
+                   FontSize="14"
+                   LineHeight="1.3"
+                   TextColor="#6B7390" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Itens}">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="8" Margin="0,50,0,0">
+                    <Label Text="✋"
+                           FontSize="44"
+                           HorizontalOptions="Center" />
+                    <Label Text="Ninguém confirmou ainda."
+                           FontFamily="OpenSansSemibold"
+                           FontSize="17"
+                           TextColor="#1B2559"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 20"
+                            Stroke="#E4E8F4"
+                            StrokeThickness="1"
+                            BackgroundColor="White"
+                            Padding="18">
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+
+                            <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                <Label Text="{Binding Nome}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="17"
+                                       TextColor="#1B2559" />
+                                <Label Text="{Binding Telefone}"
+                                       FontSize="14"
+                                       TextColor="#6B7390" />
+                                <Label Text="{Binding TextoPessoas}"
+                                       FontSize="13"
+                                       TextColor="#B07A12" />
+                            </VerticalStackLayout>
+
+                            <Border Grid.Column="1"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#EEF2FF"
+                                    Padding="10,5"
+                                    VerticalOptions="Start">
+                                <Label Text="{Binding Tipo}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="12"
+                                       TextColor="#3C4A7D" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
+
+        </CollectionView>
+    </Grid>
+
+</ContentPage>

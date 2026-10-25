@@ -27,6 +27,13 @@ public class Novidade : BaseModel
     [Column("dt_DataEvento")]
     public DateTime? DataEvento { get; set; }
 
+    [Column("fl_PermiteConfirmacao")]
+    public bool PermiteConfirmacao { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public bool PodeConfirmar =>
+        PermiteConfirmacao && DataEvento.HasValue && !Expirada;
+
     // ---------- Apenas para a tela (NÃO são colunas) ----------
     // Toda propriedade sem [Column] precisa de [JsonIgnore].
 

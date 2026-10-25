@@ -28,6 +28,7 @@ namespace ChristMembers
             builder.Services.AddSingleton<NovidadeService>();
             builder.Services.AddSingleton<PedidoOracaoService>();
             builder.Services.AddSingleton<ListasService>();
+            builder.Services.AddSingleton<ConfirmacaoService>();
 
             // ViewModels
             builder.Services.AddTransient<MembrosViewModel>();
@@ -41,6 +42,8 @@ namespace ChristMembers
             builder.Services.AddTransient<ListaPedidosOracaoViewModel>();
             builder.Services.AddTransient<MuralOracaoViewModel>();
             builder.Services.AddTransient<AniversariantesViewModel>();
+            builder.Services.AddTransient<NovidadeDetalheViewModel>();
+            builder.Services.AddTransient<ConfirmadosViewModel>();
 
             // Telas
             builder.Services.AddTransient<LoginPage>();
@@ -58,6 +61,8 @@ namespace ChristMembers
             builder.Services.AddTransient<ListaPedidosOracaoPage>();
             builder.Services.AddTransient<MuralOracaoPage>();
             builder.Services.AddTransient<AniversariantesPage>();
+            builder.Services.AddTransient<NovidadeDetalhePage>();
+            builder.Services.AddTransient<ConfirmadosPage>();
 
             return builder.Build();
         }

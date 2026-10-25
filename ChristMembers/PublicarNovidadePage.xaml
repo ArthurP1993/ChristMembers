@@ -28,8 +28,9 @@
                             StrokeThickness="0"
                             Padding="0">
                         <Image Source="{Binding PreviaFoto}"
-                               HeightRequest="190"
-                               Aspect="AspectFill" />
+                            HeightRequest="220"
+                            Aspect="AspectFit"
+                            BackgroundColor="#EEF0F7" />
                     </Border>
 
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
@@ -75,6 +76,22 @@
                         </Entry.Behaviors>
                     </Entry>
 
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Pedir confirmação de presença"
+                                   FontSize="16"
+                                   TextColor="#1B2559" />
+                                                <Label Text="As pessoas poderão avisar que vão. Precisa da data do evento."
+                                   FontSize="12"
+                                   LineHeight="1.3"
+                                   TextColor="#6B7390" />
+                                            </VerticalStackLayout>
+                                            <Switch Grid.Column="1"
+                                IsToggled="{Binding PermiteConfirmacao}"
+                                OnColor="#1B2F7A"
+                                VerticalOptions="Center" />
+                    </Grid>
+                    
                     <Label Text="Sem data, a novidade fica fixa no final do feed. Com data, ela some sozinha no dia seguinte ao evento."
                            FontSize="13"
                            LineHeight="1.3"

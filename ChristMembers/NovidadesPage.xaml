@@ -9,6 +9,8 @@
     <Grid>
 
         <CollectionView ItemsSource="{Binding Novidades}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnNovidadeSelecionada"
                         Margin="20,0,20,0">
 
             <CollectionView.ItemsLayout>
@@ -22,7 +24,7 @@
                            FontSize="30"
                            TextColor="#1B2559"
                            SemanticProperties.HeadingLevel="Level1" />
-                    <Label Text="Eventos e avisos da igreja."
+                    <Label Text="Eventos e avisos da igreja. Toque em uma novidade para ver os detalhes."
                            FontSize="16"
                            TextColor="#6B7390" />
                 </VerticalStackLayout>
@@ -60,22 +62,35 @@
 
                             <Image Source="{Binding CaminhoFoto}"
                                    IsVisible="{Binding TemFoto}"
-                                   HeightRequest="210"
-                                   Aspect="AspectFill" />
+                                   Aspect="AspectFit"
+                                   MaximumHeightRequest="460"
+                                   BackgroundColor="#EEF0F7" />
 
                             <VerticalStackLayout Padding="20" Spacing="10">
 
-                                <Border IsVisible="{Binding TemDataEvento}"
-                                        StrokeShape="RoundRectangle 14"
-                                        StrokeThickness="0"
-                                        BackgroundColor="#FFF0CC"
-                                        Padding="12,5"
-                                        HorizontalOptions="Start">
-                                    <Label Text="{Binding TextoEvento, StringFormat='📅 {0}'}"
-                                           FontFamily="OpenSansSemibold"
-                                           FontSize="13"
-                                           TextColor="#8A5A00" />
-                                </Border>
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border IsVisible="{Binding TemDataEvento}"
+                                            StrokeShape="RoundRectangle 14"
+                                            StrokeThickness="0"
+                                            BackgroundColor="#FFF0CC"
+                                            Padding="12,5">
+                                        <Label Text="{Binding TextoEvento, StringFormat='📅 {0}'}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="13"
+                                               TextColor="#8A5A00" />
+                                    </Border>
+
+                                    <Border IsVisible="{Binding PodeConfirmar}"
+                                            StrokeShape="RoundRectangle 14"
+                                            StrokeThickness="0"
+                                            BackgroundColor="#E3F6EC"
+                                            Padding="12,5">
+                                        <Label Text="✋ Confirme sua presença"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="13"
+                                               TextColor="#1F6B47" />
+                                    </Border>
+                                </HorizontalStackLayout>
 
                                 <Label Text="{Binding Titulo}"
                                        FontFamily="OpenSansSemibold"
@@ -91,6 +106,7 @@
                                        FontSize="12"
                                        TextColor="#9AA1BC"
                                        Margin="0,4,0,0" />
+
                                 <Button Text="Remover"
                                         IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=EhAdmin}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=ExcluirCommand}"

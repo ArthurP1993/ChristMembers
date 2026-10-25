@@ -65,6 +65,7 @@ public class NovidadeService
         string titulo,
         string descricao,
         DateTime? dataEvento,
+        bool permiteConfirmacao,
         FileResult? foto)
     {
         Client cliente = await _supabase.ObterAsync();
@@ -79,7 +80,8 @@ public class NovidadeService
             Titulo = titulo.Trim(),
             Descricao = descricao.Trim(),
             NomeArquivoFoto = nomeArquivo,
-            DataEvento = dataEvento?.Date
+            DataEvento = dataEvento?.Date,
+            PermiteConfirmacao = permiteConfirmacao && dataEvento.HasValue,
         };
 
         try

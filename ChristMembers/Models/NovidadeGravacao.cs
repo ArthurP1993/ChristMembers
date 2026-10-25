@@ -21,4 +21,7 @@ public class NovidadeGravacao : BaseModel
 
     [Column("dt_DataEvento")]
     public DateTime? DataEvento { get; set; }
+
+    [Column("fl_PermiteConfirmacao")]
+    public bool PermiteConfirmacao { get; set; }
 }

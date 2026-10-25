@@ -17,6 +17,7 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
     private string _mensagemErro = string.Empty;
     private FileResult? _foto;
     private bool _publicando;
+    private bool _permiteConfirmacao;
 
     public string Titulo
     {
@@ -45,6 +46,12 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
             if (SetProperty(ref _mensagemErro, value))
                 OnPropertyChanged(nameof(TemErro));
         }
+    }
+
+    public bool PermiteConfirmacao
+    {
+        get => _permiteConfirmacao;
+        set => SetProperty(ref _permiteConfirmacao, value);
     }
 
     public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
@@ -107,7 +114,7 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
     {
         if (_publicando)
             return;
-            
+
         if (_auth.UsuarioLogado?.Cargo != AuthService.CargoAdmin)
         {
             MensagemErro = "Apenas o administrador pode publicar novidades.";
@@ -142,6 +149,9 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
             }
         }
 
+        if (PermiteConfirmacao && string.IsNullOrWhiteSpace(DataEventoTexto))
+            erros.Add("Para pedir confirmação de presença, informe a data do evento.");
+
         if (erros.Count > 0)
         {
             MensagemErro = string.Join(Environment.NewLine, erros);
@@ -153,7 +163,7 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
 
         try
         {
-            await _novidadeService.Publicar(Titulo, Descricao, dataEvento, Foto);
+            await _novidadeService.Publicar(Titulo, Descricao, dataEvento, PermiteConfirmacao, Foto);
 
             await Shell.Current.GoToAsync("..");
         }
@@ -164,6 +174,10 @@ public class PublicarNovidadeViewModel : INotifyPropertyChanged
         catch (Exception)
         {
             MensagemErro = "Não foi possível publicar. Verifique a internet e tente novamente.";
+        }
+        finally
+        {
+            _publicando = false;
         }
     }
 
