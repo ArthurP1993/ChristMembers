@@ -1,6 +1,5 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
-using System.Text.Json.Serialization;
 
 namespace ChristMembers.Models;
 
@@ -52,6 +51,9 @@ public class Membro : BaseModel
     [Column("fl_FoiBatizado")]
     public bool? FoiBatizado { get; set; }
 
+    [Column("dt_Batismo")]
+    public DateTime? DataBatismo { get; set; }
+
     [Column("ds_Observacao")]
     public string Observacao { get; set; } = string.Empty;
 
@@ -73,10 +75,41 @@ public class Membro : BaseModel
     [Column("id_Setor")]
     public long? IdSetor { get; set; }
 
-    // Apenas para a tela (não são colunas)
-    [JsonIgnore]
+    [Column("id_EstadoCivil")]
+    public long? IdEstadoCivil { get; set; }
+
+    [Column("fl_TemFilhos")]
+    public bool? TemFilhos { get; set; }
+
+    [Column("id_Genero")]
+    public long? IdGenero { get; set; }
+
+    [Column("fl_PossuiDeficiencia")]
+    public bool? PossuiDeficiencia { get; set; }
+
+    [Column("id_Deficiencia")]
+    public long? IdDeficiencia { get; set; }
+
+    [Column("ds_DeficienciaOutros")]
+    public string? DeficienciaOutros { get; set; }
+
+    [Column("fl_ConsentimentoSaude")]
+    public bool ConsentimentoSaude { get; set; }
+
+    // ---------- Apenas para a tela (NÃO são colunas) ----------
+
+    [Newtonsoft.Json.JsonIgnore]
     public string NomeConsagracao { get; set; } = string.Empty;
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public string NomeSetor { get; set; } = string.Empty;
+
+    [Newtonsoft.Json.JsonIgnore]
+    public string NomeEstadoCivil { get; set; } = string.Empty;
+
+    [Newtonsoft.Json.JsonIgnore]
+    public string NomeGenero { get; set; } = string.Empty;
+
+    [Newtonsoft.Json.JsonIgnore]
+    public string NomeDeficiencia { get; set; } = string.Empty;
 }

@@ -6,12 +6,14 @@ namespace ChristMembers;
 public partial class CadastroMembro : ContentPage
 {
     private readonly AuthService _auth;
+    private readonly MembrosViewModel _viewModel;
 
     public CadastroMembro(MembrosViewModel viewModel, AuthService auth)
     {
         InitializeComponent();
 
         _auth = auth;
+        _viewModel = viewModel;
 
         BindingContext = viewModel;
 
@@ -22,6 +24,13 @@ public partial class CadastroMembro : ContentPage
             Text = "Sair",
             Command = new Command(async () => await SairAsync())
         });
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await _viewModel.CarregarListasAsync();
     }
 
     protected override bool OnBackButtonPressed()

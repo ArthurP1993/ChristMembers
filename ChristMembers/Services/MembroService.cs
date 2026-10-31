@@ -100,45 +100,73 @@ public class MembroService
     }
 
     // Traduz os códigos em nomes. Se as listas não carregarem, os nomes ficam vazios.
+    // Traduz os códigos em nomes. Se as listas não carregarem, os nomes ficam vazios.
     private async Task PreencherNomesAsync(IEnumerable<Membro> membros, bool incluirSetores)
     {
         Dictionary<long, string> consagracoes = new();
+        Dictionary<long, string> estadosCivis = new();
+        Dictionary<long, string> generos = new();
+        Dictionary<long, string> deficiencias = new();
         Dictionary<long, string> setores = new();
 
-        try
+        await Tentar(async () =>
         {
             foreach (Consagracao c in await _listas.ObterConsagracoesAsync())
                 consagracoes[c.Id] = c.Descricao;
-        }
-        catch (Exception)
+        });
+
+        await Tentar(async () =>
         {
-        }
+            foreach (EstadoCivil e in await _listas.ObterEstadosCivisAsync())
+                estadosCivis[e.Id] = e.Descricao;
+        });
+
+        await Tentar(async () =>
+        {
+            foreach (Genero g in await _listas.ObterGenerosAsync())
+                generos[g.Id] = g.Descricao;
+        });
+
+        await Tentar(async () =>
+        {
+            foreach (Deficiencia d in await _listas.ObterDeficienciasAsync())
+                deficiencias[d.Id] = d.Descricao;
+        });
 
         if (incluirSetores)
         {
-            try
+            await Tentar(async () =>
             {
                 foreach (Setor s in await _listas.ObterSetoresAsync())
                     setores[s.Id] = s.Descricao;
-            }
-            catch (Exception)
-            {
-            }
+            });
         }
 
         foreach (Membro membro in membros)
         {
-            membro.NomeConsagracao =
-                membro.IdConsagracao.HasValue
-                && consagracoes.TryGetValue(membro.IdConsagracao.Value, out string? nomeConsagracao)
-                    ? nomeConsagracao
-                    : string.Empty;
+            membro.NomeConsagracao = NomeDe(consagracoes, membro.IdConsagracao);
+            membro.NomeSetor = NomeDe(setores, membro.IdSetor);
+            membro.NomeEstadoCivil = NomeDe(estadosCivis, membro.IdEstadoCivil);
+            membro.NomeGenero = NomeDe(generos, membro.IdGenero);
+            membro.NomeDeficiencia = NomeDe(deficiencias, membro.IdDeficiencia);
+        }
+    }
 
-            membro.NomeSetor =
-                membro.IdSetor.HasValue
-                && setores.TryGetValue(membro.IdSetor.Value, out string? nomeSetor)
-                    ? nomeSetor
-                    : string.Empty;
+    private static string NomeDe(Dictionary<long, string> lista, long? id)
+    {
+        return id.HasValue && lista.TryGetValue(id.Value, out string? nome)
+            ? nome
+            : string.Empty;
+    }
+
+    private static async Task Tentar(Func<Task> acao)
+    {
+        try
+        {
+            await acao();
+        }
+        catch (Exception)
+        {
         }
     }
 }

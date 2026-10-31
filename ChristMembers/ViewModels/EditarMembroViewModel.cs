@@ -297,6 +297,9 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             _membro.IdSetor = SetorSelecionado?.Id;
         }
 
+        if (_membro.FoiBatizado != true)
+            _membro.DataBatismo = null;
+
         MensagemErro = string.Empty;
         _salvando = true;
 

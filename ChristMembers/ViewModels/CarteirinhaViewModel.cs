@@ -83,10 +83,22 @@ public class CarteirinhaViewModel
         Adicionar("CEP", membro.CEP);
 
         if (DataValida(entrada))
-            Adicionar("Entrada na igreja", entrada!.Value.ToString("dd/MM/yyyy"));
+            Adicionar("Filiação", entrada!.Value.ToString("dd/MM/yyyy"));
 
         Adicionar("Consagração", membro.NomeConsagracao);
         Adicionar("Setor", membro.NomeSetor);
+
+        Adicionar("Gênero", membro.NomeGenero);
+        Adicionar("Estado civil", membro.NomeEstadoCivil);
+
+        if (membro.TemFilhos.HasValue)
+            Adicionar("Filhos", membro.TemFilhos.Value ? "Sim" : "Não");
+
+        if (DataValida(membro.DataBatismo))
+            Adicionar("Data do batismo", membro.DataBatismo!.Value.ToString("dd/MM/yyyy"));
+
+        if (membro.PossuiDeficiencia.HasValue)
+            Adicionar("Deficiência", TextoDeficiencia(membro));
 
         Adicionar("Observação", membro.Observacao);
     }
@@ -159,5 +171,20 @@ public class CarteirinhaViewModel
             return $"{membro.Cidade.Trim()} - {membro.Estado.Trim()}";
 
         return temCidade ? membro.Cidade.Trim() : membro.Estado?.Trim() ?? string.Empty;
+    }
+
+    private static string TextoDeficiencia(Membro membro)
+    {
+        if (membro.PossuiDeficiencia != true)
+            return "Não";
+
+        if (!string.IsNullOrWhiteSpace(membro.DeficienciaOutros))
+        {
+            return string.IsNullOrWhiteSpace(membro.NomeDeficiencia)
+                ? membro.DeficienciaOutros.Trim()
+                : $"{membro.NomeDeficiencia}: {membro.DeficienciaOutros.Trim()}";
+        }
+
+        return string.IsNullOrWhiteSpace(membro.NomeDeficiencia) ? "Sim" : membro.NomeDeficiencia;
     }
 }
