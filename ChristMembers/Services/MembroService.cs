@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using ChristMembers.Models;
+using Supabase.Postgrest;
 
 namespace ChristMembers.Services;
 
@@ -61,16 +62,20 @@ public class MembroService
     {
         var cliente = await _supabase.ObterAsync();
 
-        var resposta = await cliente.From<Membro>().Insert(membro);
+        await cliente.From<MembroGravacao>().Insert(
+            MembroGravacao.De(membro),
+            new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
 
-        return resposta.Models.FirstOrDefault();
+        return string.IsNullOrEmpty(membro.IdAuth)
+            ? null
+            : await ObterPorAuthAsync(membro.IdAuth);
     }
 
     public async Task Atualizar(Membro membro)
     {
         var cliente = await _supabase.ObterAsync();
 
-        await cliente.From<Membro>().Update(membro);
+        await cliente.From<MembroGravacao>().Update(MembroGravacao.De(membro));
 
         await PreencherNomesAsync(new[] { membro }, true);
 
@@ -88,7 +93,7 @@ public class MembroService
 
         try
         {
-            await cliente.From<Membro>().Update(membro);
+            await cliente.From<MembroGravacao>().Update(MembroGravacao.De(membro));
         }
         catch
         {
@@ -99,7 +104,6 @@ public class MembroService
         Membros.Remove(membro);
     }
 
-    // Traduz os códigos em nomes. Se as listas não carregarem, os nomes ficam vazios.
     // Traduz os códigos em nomes. Se as listas não carregarem, os nomes ficam vazios.
     private async Task PreencherNomesAsync(IEnumerable<Membro> membros, bool incluirSetores)
     {

@@ -16,16 +16,11 @@
                 HorizontalOptions="Center"/>
 
             <Label
-                Text="IADA"
-                FontSize="40"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
-
-            <Label
                 Text="Editar cadastro"
                 FontSize="20"
                 HorizontalOptions="Center" />
 
+            <!-- Dados pessoais -->
             <Entry Placeholder="Nome" Text="{Binding Nome}" />
 
             <Entry Placeholder="Telefone (11) 99999-9999"
@@ -52,7 +47,37 @@
                 </Entry.Behaviors>
             </Entry>
 
+            <Picker Title="Gênero"
+                    ItemsSource="{Binding Generos}"
+                    ItemDisplayBinding="{Binding Nome}"
+                    SelectedItem="{Binding GeneroSelecionado}" />
+
+            <Picker Title="Estado civil"
+                    ItemsSource="{Binding EstadosCivis}"
+                    ItemDisplayBinding="{Binding Nome}"
+                    SelectedItem="{Binding EstadoCivilSelecionado}" />
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Label Text="Tem filhos?"
+                       FontAttributes="Bold"
+                       Margin="0,6,0,0" />
+                <RadioButton Content="Sim"
+                             GroupName="FilhosEdicao"
+                             IsChecked="{Binding FilhosSim}"
+                             VerticalOptions="Center" />
+                <RadioButton Content="Não"
+                             GroupName="FilhosEdicao"
+                             IsChecked="{Binding FilhosNao}"
+                             VerticalOptions="Center" />
+                <RadioButton Content="Não informado"
+                             GroupName="FilhosEdicao"
+                             IsChecked="{Binding FilhosNaoInformado}"
+                             VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
             <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+
+            <!-- Endereço -->
             <Entry Placeholder="Cep" Keyboard="Numeric" Text="{Binding CEP}" />
             <Entry Placeholder="Endereço" Text="{Binding Endereco}" />
             <Entry Placeholder="Numero" Text="{Binding Numero}" />
@@ -61,7 +86,8 @@
             <Entry Placeholder="Cidade" Text="{Binding Cidade}" />
             <Entry Placeholder="Estado" Text="{Binding Estado}" />
 
-            <Entry Placeholder="Data de entrada (dd/mm/aaaa)"
+            <!-- Na igreja -->
+            <Entry Placeholder="Data de filiação (dd/mm/aaaa)"
                    Keyboard="Numeric"
                    Text="{Binding DataEntradaTexto}">
                 <Entry.Behaviors>
@@ -97,9 +123,60 @@
                              VerticalOptions="Center" />
             </HorizontalStackLayout>
 
+            <Entry Placeholder="Data do batismo (dd/mm/aaaa)"
+                   IsVisible="{Binding MostrarDataBatismo}"
+                   Keyboard="Numeric"
+                   Text="{Binding DataBatismoTexto}">
+                <Entry.Behaviors>
+                    <behaviors:MascaraDataBehavior />
+                </Entry.Behaviors>
+            </Entry>
+
+            <!-- Deficiência: só o que o próprio membro informou pode ser corrigido -->
+            <VerticalStackLayout IsVisible="{Binding PodeEditarDeficiencia}" Spacing="25">
+
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Possui deficiência?"
+                           FontAttributes="Bold"
+                           Margin="0,6,0,0" />
+                    <RadioButton Content="Sim"
+                                 GroupName="DeficienciaEdicao"
+                                 IsChecked="{Binding DeficienciaSim}"
+                                 VerticalOptions="Center" />
+                    <RadioButton Content="Não (remover)"
+                                 GroupName="DeficienciaEdicao"
+                                 IsChecked="{Binding DeficienciaNao}"
+                                 VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <Picker Title="Tipo de deficiência"
+                        IsVisible="{Binding MostrarTipoDeficiencia}"
+                        ItemsSource="{Binding Deficiencias}"
+                        ItemDisplayBinding="{Binding Nome}"
+                        SelectedItem="{Binding DeficienciaSelecionada}" />
+
+                <VerticalStackLayout IsVisible="{Binding MostrarOutros}" Spacing="4">
+                    <Editor Placeholder="Descreva a deficiência (máximo 500 caracteres)"
+                            MaxLength="500"
+                            HeightRequest="120"
+                            Text="{Binding DeficienciaOutros}" />
+                    <Label Text="{Binding ContadorOutros}"
+                           FontSize="12"
+                           TextColor="Gray"
+                           HorizontalOptions="End" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <Label Text="{Binding TextoDeficienciaSomenteLeitura}"
+                   IsVisible="{Binding MostrarDeficienciaSomenteLeitura}"
+                   FontSize="14"
+                   LineHeight="1.35"
+                   TextColor="Gray" />
+
+            <!-- Observações -->
             <Editor Placeholder="Observações"
                     HeightRequest="120"
-                    Margin="0,-10,0,0"
                     Text="{Binding Observacao}" />
 
             <Label Text="{Binding MensagemErro}"
