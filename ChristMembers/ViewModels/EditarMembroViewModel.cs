@@ -16,6 +16,7 @@ public class EditarMembroViewModel : INotifyPropertyChanged
     private readonly MembroService _membroService;
     private readonly AuthService _auth;
     private readonly ListasService _listas;
+    private string _siglaCongregacao = string.Empty;
 
     private Membro? _membro;
     private bool _salvando;
@@ -204,6 +205,12 @@ public class EditarMembroViewModel : INotifyPropertyChanged
 
     public string ContadorOutros => $"{DeficienciaOutros.Length}/{LimiteOutros}";
 
+    public string SiglaCongregacao
+    {
+        get => _siglaCongregacao;
+        set => SetProperty(ref _siglaCongregacao, value ?? string.Empty);
+    }
+
     // ---------- Sim / Não ----------
 
     public bool BatizadoSim
@@ -313,6 +320,7 @@ public class EditarMembroViewModel : INotifyPropertyChanged
         _cidade = membro.Cidade ?? string.Empty;
         _estado = membro.Estado ?? string.Empty;
         _observacao = membro.Observacao ?? string.Empty;
+        _siglaCongregacao = membro.SiglaCongregacao ?? string.Empty;
 
         _foiBatizado = membro.FoiBatizado;
         _temFilhos = membro.TemFilhos;
@@ -552,6 +560,9 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             }
         }
 
+        if (SiglaCongregacao.Trim().Length > 10)
+            erros.Add("A sigla da congregação pode ter no máximo 10 caracteres.");
+
         if (erros.Count > 0)
         {
             MensagemErro = string.Join(Environment.NewLine, erros);
@@ -580,6 +591,7 @@ public class EditarMembroViewModel : INotifyPropertyChanged
             _membro.DataBatismo = _foiBatizado == true ? batismo : null;
             _membro.TemFilhos = _temFilhos;
             _membro.Observacao = Observacao.Trim();
+            _membro.SiglaCongregacao = string.IsNullOrWhiteSpace(SiglaCongregacao) ? null : SiglaCongregacao.Trim().ToUpperInvariant();
 
             // Só mexe nas listas se elas carregaram: assim nada é apagado por engano.
             if (_listasCarregadas)

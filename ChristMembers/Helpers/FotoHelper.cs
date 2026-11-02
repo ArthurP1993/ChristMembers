@@ -6,10 +6,8 @@ namespace ChristMembers.Helpers;
 
 public static class FotoHelper
 {
-    private const float LadoMaximo = 1600f;
-
     // Devolve a foto reduzida em JPEG, ou null se não foi possível reduzir.
-    public static byte[]? Reduzir(byte[] original)
+    public static byte[]? Reduzir(byte[] original, float ladoMaximo = 1600f, float qualidade = 0.85f)
     {
         try
         {
@@ -20,9 +18,9 @@ public static class FotoHelper
             if (imagem is null)
                 return null;
 
-            MauiImagem reduzida = imagem.Downsize(LadoMaximo, true);
+            MauiImagem reduzida = imagem.Downsize(ladoMaximo, true);
 
-            byte[] resultado = reduzida.AsBytes(MauiFormato.Jpeg, 0.85f);
+            byte[] resultado = reduzida.AsBytes(MauiFormato.Jpeg, qualidade);
 
             return resultado.Length > 0 ? resultado : null;
         }

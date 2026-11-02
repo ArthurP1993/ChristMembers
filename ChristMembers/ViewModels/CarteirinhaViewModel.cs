@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using ChristMembers.Config;
+using ChristMembers.Helpers;
 using ChristMembers.Models;
 
 namespace ChristMembers.ViewModels;
@@ -10,9 +13,19 @@ public class DadoCarteirinha
     public string Valor { get; set; } = string.Empty;
 }
 
-public class CarteirinhaViewModel
+public class CarteirinhaViewModel : INotifyPropertyChanged
 {
-    private static readonly CultureInfo PtBr = new("pt-BR");
+    private const string NaoInformado = "Não informado";
+
+    private readonly Membro _membro;
+
+    private string? _fotoUrl;
+
+    // ---------- Cartão ----------
+
+    public string NomeIgreja => IgrejaConfig.Nome;
+
+    public string TituloCredencial { get; }
 
     public string Nome { get; }
 
@@ -20,54 +33,90 @@ public class CarteirinhaViewModel
 
     public string Numero { get; }
 
-    public string MembroDesde { get; }
+    public string NascimentoTexto { get; }
 
-    public string TextoBatismo { get; }
+    public string CpfTexto { get; }
 
-    public Color CorFundoBatismo { get; }
+    public List<DadoCarteirinha> CamposCartao { get; } = new();
 
-    public Color CorTextoBatismo { get; }
+    // ---------- Dados cadastrais (o botão abaixo do cartão) ----------
 
     public List<DadoCarteirinha> Dados { get; } = new();
 
+    // ---------- Foto ----------
+
+    public string? FotoUrl
+    {
+        get => _fotoUrl;
+
+        set
+        {
+            if (_fotoUrl == value)
+                return;
+
+            _fotoUrl = value;
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(TemFoto));
+            OnPropertyChanged(nameof(SemFoto));
+            OnPropertyChanged(nameof(TextoBotaoFoto));
+        }
+    }
+
+    public bool TemFoto => !string.IsNullOrEmpty(_fotoUrl);
+
+    public bool SemFoto => !TemFoto;
+
+    public string TextoBotaoFoto =>
+        string.IsNullOrWhiteSpace(_membro.NomeFoto) ? "Adicionar foto" : "Trocar foto";
+
     public CarteirinhaViewModel(Membro membro)
     {
+        _membro = membro;
+
         Nome = membro.Nome;
         Iniciais = MontarIniciais(membro.Nome);
         Numero = $"Nº {membro.Id:D4}";
 
-        DateTime? entrada = membro.DataEntrada;
+        string cargo = string.IsNullOrWhiteSpace(membro.NomeConsagracao)
+            ? "Membro"
+            : membro.NomeConsagracao.Trim();
+
+        TituloCredencial = $"Credencial de {cargo}";
+
         DateTime? nascimento = membro.DataNascimento;
+        DateTime? entrada = membro.DataEntrada;
+        DateTime? batismo = membro.DataBatismo;
 
-        string desde = DataValida(entrada)
-            ? $"Membro desde {entrada!.Value.ToString("MMMM 'de' yyyy", PtBr)}"
-            : "Membro";
+        NascimentoTexto = DataValida(nascimento)
+            ? nascimento!.Value.ToString("dd/MM/yyyy")
+            : NaoInformado;
 
-        MembroDesde = string.IsNullOrWhiteSpace(membro.NomeConsagracao)
-            ? desde
-            : $"{membro.NomeConsagracao} · {desde}";
+        CpfTexto = FormatarCpf(membro.CPF);
 
-        if (membro.FoiBatizado == true)
-        {
-            TextoBatismo = "Batizado";
-            CorFundoBatismo = Color.FromArgb("#F8CE62");
-            CorTextoBatismo = Color.FromArgb("#2B1D00");
-        }
-        else if (membro.FoiBatizado == false)
-        {
-            TextoBatismo = "Não batizado";
-            CorFundoBatismo = Color.FromArgb("#33FFFFFF");
-            CorTextoBatismo = Colors.White;
-        }
-        else
-        {
-            TextoBatismo = "Batismo não informado";
-            CorFundoBatismo = Color.FromArgb("#33FFFFFF");
-            CorTextoBatismo = Colors.White;
-        }
+        // ----- Campos do cartão -----
+
+        DateTime emissao = DataValida(membro.DataCadastro)
+            ? membro.DataCadastro!.Value
+            : DateTime.Today;
+
+        AdicionarCampo("Emitida em", emissao.ToString("dd/MM/yyyy"));
+
+        if (DataValida(entrada))
+            AdicionarCampo("Data de membresia", entrada!.Value.ToString("dd/MM/yyyy"));
+
+        if (DataValida(batismo))
+            AdicionarCampo("Data de batismo", batismo!.Value.ToString("dd/MM/yyyy"));
+
+        if (!string.IsNullOrWhiteSpace(membro.SiglaCongregacao))
+            AdicionarCampo("Congregação", membro.SiglaCongregacao.Trim().ToUpperInvariant());
+
+        AdicionarCampo("Telefone da igreja", IgrejaConfig.Telefone);
+
+        // ----- Dados cadastrais -----
 
         Adicionar("Telefone", membro.Telefone);
-        Adicionar("CPF", membro.CPF);
+        Adicionar("CPF", CpfTexto == NaoInformado ? string.Empty : CpfTexto);
 
         if (DataValida(nascimento))
         {
@@ -81,21 +130,20 @@ public class CarteirinhaViewModel
         Adicionar("Bairro", membro.Bairro);
         Adicionar("Cidade", MontarCidade(membro));
         Adicionar("CEP", membro.CEP);
-
-        if (DataValida(entrada))
-            Adicionar("Filiação", entrada!.Value.ToString("dd/MM/yyyy"));
-
         Adicionar("Consagração", membro.NomeConsagracao);
         Adicionar("Setor", membro.NomeSetor);
-
+        Adicionar("Congregação", membro.SiglaCongregacao);
         Adicionar("Gênero", membro.NomeGenero);
         Adicionar("Estado civil", membro.NomeEstadoCivil);
 
         if (membro.TemFilhos.HasValue)
             Adicionar("Filhos", membro.TemFilhos.Value ? "Sim" : "Não");
 
-        if (DataValida(membro.DataBatismo))
-            Adicionar("Data do batismo", membro.DataBatismo!.Value.ToString("dd/MM/yyyy"));
+        if (DataValida(entrada))
+            Adicionar("Filiação", entrada!.Value.ToString("dd/MM/yyyy"));
+
+        if (DataValida(batismo))
+            Adicionar("Data do batismo", batismo!.Value.ToString("dd/MM/yyyy"));
 
         if (membro.PossuiDeficiencia.HasValue)
             Adicionar("Deficiência", TextoDeficiencia(membro));
@@ -103,16 +151,17 @@ public class CarteirinhaViewModel
         Adicionar("Observação", membro.Observacao);
     }
 
+    private void AdicionarCampo(string rotulo, string valor)
+    {
+        CamposCartao.Add(new DadoCarteirinha { Rotulo = rotulo, Valor = valor });
+    }
+
     private void Adicionar(string rotulo, string? valor)
     {
         if (string.IsNullOrWhiteSpace(valor))
             return;
 
-        Dados.Add(new DadoCarteirinha
-        {
-            Rotulo = rotulo,
-            Valor = valor.Trim()
-        });
+        Dados.Add(new DadoCarteirinha { Rotulo = rotulo, Valor = valor.Trim() });
     }
 
     private static bool DataValida(DateTime? data)
@@ -132,10 +181,21 @@ public class CarteirinhaViewModel
         return idade;
     }
 
+    private static string FormatarCpf(string? cpf)
+    {
+        string d = CpfValidador.SomenteDigitos(cpf);
+
+        if (d.Length == 0)
+            return NaoInformado;
+
+        return d.Length == 11
+            ? $"{d[..3]}.{d[3..6]}.{d[6..9]}-{d[9..]}"
+            : cpf!.Trim();
+    }
+
     private static string MontarIniciais(string nome)
     {
-        string[] partes = nome
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string[] partes = nome.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         if (partes.Length == 0)
             return "?";
@@ -186,5 +246,14 @@ public class CarteirinhaViewModel
         }
 
         return string.IsNullOrWhiteSpace(membro.NomeDeficiencia) ? "Sim" : membro.NomeDeficiencia;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? propriedade = null)
+    {
+        PropertyChanged?.Invoke(
+            this,
+            new PropertyChangedEventArgs(propriedade));
     }
 }

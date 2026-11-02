@@ -112,4 +112,13 @@ public class Membro : BaseModel
 
     [Newtonsoft.Json.JsonIgnore]
     public string NomeDeficiencia { get; set; } = string.Empty;
+
+    [Column("dt_Cadastro", ignoreOnInsert: true, ignoreOnUpdate: true)]
+    public DateTime? DataCadastro { get; set; }
+
+    [Column("ds_SiglaCongregacao")]
+    public string? SiglaCongregacao { get; set; }
+
+    [Column("ds_NomeFoto", ignoreOnInsert: true, ignoreOnUpdate: true)]
+    public string? NomeFoto { get; set; }
 }

@@ -29,6 +29,7 @@ namespace ChristMembers
             builder.Services.AddSingleton<PedidoOracaoService>();
             builder.Services.AddSingleton<ListasService>();
             builder.Services.AddSingleton<ConfirmacaoService>();
+            builder.Services.AddSingleton<FotoMembroService>();
 
             // ViewModels
             builder.Services.AddTransient<MembrosViewModel>();

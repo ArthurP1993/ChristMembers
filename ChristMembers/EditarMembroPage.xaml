@@ -105,6 +105,11 @@
                     ItemDisplayBinding="{Binding Nome}"
                     SelectedItem="{Binding SetorSelecionado}" />
 
+            <Entry Placeholder="Sigla da congregação (ex.: SEDE)"
+                   MaxLength="10"
+                   TextTransform="Uppercase"
+                   Text="{Binding SiglaCongregacao}" />
+
             <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                 <Label Text="Foi batizado?"
                        FontAttributes="Bold"

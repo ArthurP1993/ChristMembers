@@ -6,115 +6,198 @@
              BackgroundColor="#F4F6FB">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,20,20,40" Spacing="20">
+        <VerticalStackLayout Padding="20,20,20,40" Spacing="18">
 
-            <!-- Carteirinha -->
-            <Border StrokeShape="RoundRectangle 28"
-                    StrokeThickness="0"
-                    Padding="24">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#1B2F7A" Offset="0.0" />
-                        <GradientStop Color="#4B3DB8" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Border.Shadow>
-                    <Shadow Brush="#1B2F7A" Opacity="0.30" Radius="24" Offset="0,12" />
-                </Border.Shadow>
-
-                <VerticalStackLayout Spacing="18">
-
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Grid.Column="0"
-                               Text="IADA"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="16"
-                               CharacterSpacing="4"
-                               TextColor="#F8CE62" />
-                        <Label Grid.Column="1"
-                               Text="{Binding Numero}"
-                               FontSize="14"
-                               TextColor="#CCFFFFFF" />
-                    </Grid>
-
-                    <Border StrokeShape="Ellipse"
-                            Stroke="#66FFFFFF"
-                            StrokeThickness="1.5"
-                            BackgroundColor="#26FFFFFF"
-                            WidthRequest="78"
-                            HeightRequest="78"
-                            HorizontalOptions="Start">
-                        <Label Text="{Binding Iniciais}"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="28"
-                               TextColor="White"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Border>
-
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="{Binding Nome}"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="26"
-                               TextColor="White"
-                               SemanticProperties.HeadingLevel="Level1" />
-                        <Label Text="{Binding MembroDesde}"
-                               FontSize="15"
-                               TextColor="#D6DBF5" />
-                    </VerticalStackLayout>
-
-                    <Border StrokeShape="RoundRectangle 14"
-                            StrokeThickness="0"
-                            BackgroundColor="{Binding CorFundoBatismo}"
-                            Padding="14,6"
-                            HorizontalOptions="Start">
-                        <Label Text="{Binding TextoBatismo}"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="13"
-                               TextColor="{Binding CorTextoBatismo}" />
-                    </Border>
-
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Dados do cadastro -->
+            <!-- Credencial -->
             <Border StrokeShape="RoundRectangle 24"
                     Stroke="#E4E8F4"
                     StrokeThickness="1"
                     BackgroundColor="White"
-                    Padding="20,16">
+                    Padding="0">
+                <Border.Shadow>
+                    <Shadow Brush="#1B2F7A" Opacity="0.25" Radius="22" Offset="0,10" />
+                </Border.Shadow>
 
                 <VerticalStackLayout Spacing="0">
 
-                    <Label Text="Dados do cadastro"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="18"
-                           TextColor="#1B2559"
-                           Margin="0,0,0,6" />
+                    <!-- Cabeçalho: logo, nome da igreja e tipo da credencial -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="16">
+                        <Grid.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#1B2F7A" Offset="0.0" />
+                                <GradientStop Color="#4B3DB8" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Grid.Background>
 
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Dados}">
+                        <Border Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                StrokeThickness="0"
+                                BackgroundColor="White"
+                                Padding="6"
+                                WidthRequest="60"
+                                HeightRequest="60">
+                            <Image Source="logo.png" Aspect="AspectFit" />
+                        </Border>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                            <Label Text="{Binding NomeIgreja}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="15"
+                                   TextColor="White" />
+                            <Label Text="{Binding TituloCredencial}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   TextColor="#F8CE62" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Foto e dados principais -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14" Padding="16,16,16,10">
+
+                        <VerticalStackLayout Grid.Column="0" Spacing="8" WidthRequest="96">
+
+                            <Border StrokeShape="RoundRectangle 12"
+                                    Stroke="#E4E8F4"
+                                    StrokeThickness="1"
+                                    BackgroundColor="#EEF0F7"
+                                    WidthRequest="96"
+                                    HeightRequest="128"
+                                    Padding="0">
+                                <Grid>
+                                    <Image Source="{Binding FotoUrl}"
+                                           IsVisible="{Binding TemFoto}"
+                                           Aspect="AspectFill" />
+                                    <Label Text="{Binding Iniciais}"
+                                           IsVisible="{Binding SemFoto}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="30"
+                                           TextColor="#9AA1BC"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+
+                            <Button x:Name="BotaoFoto"
+                                    IsVisible="False"
+                                    Text="{Binding TextoBotaoFoto}"
+                                    FontSize="12"
+                                    TextColor="#1B2F7A"
+                                    BackgroundColor="#E4EBFF"
+                                    CornerRadius="10"
+                                    HeightRequest="34"
+                                    Padding="4,0"
+                                    Clicked="OnTrocarFotoClicked" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="{Binding Nome}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="18"
+                                   TextColor="#1B2559"
+                                   SemanticProperties.HeadingLevel="Level1" />
+
+                            <Label Text="{Binding Numero}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   TextColor="#B07A12" />
+
+                            <VerticalStackLayout Spacing="1">
+                                <Label Text="Data de nascimento" FontSize="11" TextColor="#9AA1BC" />
+                                <Label Text="{Binding NascimentoTexto}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       TextColor="#1B2559" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="1">
+                                <Label Text="CPF" FontSize="11" TextColor="#9AA1BC" />
+                                <Label Text="{Binding CpfTexto}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       TextColor="#1B2559" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#EEF0F7" Margin="16,0" />
+
+                    <!-- Emissão, membresia, batismo, congregação e telefone -->
+                    <FlexLayout BindableLayout.ItemsSource="{Binding CamposCartao}"
+                                Direction="Row"
+                                Wrap="Wrap"
+                                AlignItems="Start"
+                                JustifyContent="Start"
+                                Padding="16,12,8,2">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
-                                <VerticalStackLayout Spacing="2" Padding="0,12,0,0">
+                                <VerticalStackLayout FlexLayout.Basis="50%"
+                                                     Padding="0,0,8,10"
+                                                     Spacing="1">
                                     <Label Text="{Binding Rotulo}"
-                                           FontSize="12"
+                                           FontSize="11"
                                            TextColor="#9AA1BC" />
                                     <Label Text="{Binding Valor}"
-                                           FontSize="16"
-                                           LineHeight="1.3"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="14"
                                            TextColor="#1B2559" />
-                                    <BoxView HeightRequest="1"
-                                             Color="#EEF0F7"
-                                             Margin="0,12,0,0" />
                                 </VerticalStackLayout>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
+                    </FlexLayout>
+
+                    <!-- Rodapé -->
+                    <Grid BackgroundColor="#F4F6FB" Padding="16,12">
+                        <Label Text="É assegurada, nos termos da lei, a prestação de assistência religiosa nas entidades civis e militares de internação coletiva. Artigo 5, inciso VII, CF."
+                               FontSize="11"
+                               FontAttributes="Italic"
+                               LineHeight="1.3"
+                               TextColor="#6B7390"
+                               HorizontalTextAlignment="Center" />
+                    </Grid>
 
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Editar -->
+            <!-- Dados cadastrais (abre e fecha) -->
+            <Button x:Name="BotaoDados"
+                    Text="Dados cadastrais  ▾"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    TextColor="#1B2F7A"
+                    BackgroundColor="#E4EBFF"
+                    CornerRadius="16"
+                    HeightRequest="52"
+                    Clicked="OnDadosClicked" />
+
+            <Border x:Name="PainelDados"
+                    IsVisible="False"
+                    StrokeShape="RoundRectangle 24"
+                    Stroke="#E4E8F4"
+                    StrokeThickness="1"
+                    BackgroundColor="White"
+                    Padding="20,6,20,16">
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Dados}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Spacing="2" Padding="0,12,0,0">
+                                <Label Text="{Binding Rotulo}"
+                                       FontSize="12"
+                                       TextColor="#9AA1BC" />
+                                <Label Text="{Binding Valor}"
+                                       FontSize="16"
+                                       LineHeight="1.3"
+                                       TextColor="#1B2559" />
+                                <BoxView HeightRequest="1"
+                                         Color="#EEF0F7"
+                                         Margin="0,12,0,0" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Editar (administrador) -->
             <Button x:Name="BotaoEditar"
                     Text="Editar cadastro"
                     FontFamily="OpenSansSemibold"

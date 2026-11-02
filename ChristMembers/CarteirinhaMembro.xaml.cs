@@ -7,15 +7,18 @@ namespace ChristMembers;
 public partial class CarteirinhaMembro : ContentPage, IQueryAttributable
 {
     private readonly AuthService _auth;
+    private readonly FotoMembroService _fotos;
 
     private Membro? _membro;
     private bool _proprio;
+    private bool _trocandoFoto;
 
-    public CarteirinhaMembro(AuthService auth)
+    public CarteirinhaMembro(AuthService auth, FotoMembroService fotos)
     {
         InitializeComponent();
 
         _auth = auth;
+        _fotos = fotos;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -33,12 +36,16 @@ public partial class CarteirinhaMembro : ContentPage, IQueryAttributable
         }
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        if (_membro != null)
-            BindingContext = new CarteirinhaViewModel(_membro);
+        if (_membro == null)
+            return;
+
+        BindingContext = new CarteirinhaViewModel(_membro);
+
+        await CarregarFotoAsync();
     }
 
     // Quem vê a própria carteirinha só sai pelo botão Sair.
@@ -55,6 +62,7 @@ public partial class CarteirinhaMembro : ContentPage, IQueryAttributable
         _proprio = true;
 
         BotaoEditar.IsVisible = false;
+        BotaoFoto.IsVisible = true;
 
         Shell.SetBackButtonBehavior(this, new BackButtonBehavior { IsVisible = false });
 
@@ -65,11 +73,81 @@ public partial class CarteirinhaMembro : ContentPage, IQueryAttributable
         });
     }
 
+    private async Task CarregarFotoAsync()
+    {
+        if (_membro == null || BindingContext is not CarteirinhaViewModel vm)
+            return;
+
+        try
+        {
+            vm.FotoUrl = await _fotos.ObterUrlAsync(_membro);
+        }
+        catch (Exception)
+        {
+            vm.FotoUrl = null;
+        }
+    }
+
     private async Task SairAsync()
     {
         await _auth.SairAsync();
 
         await Shell.Current.GoToAsync("..");
+    }
+
+    private void OnDadosClicked(object sender, EventArgs e)
+    {
+        PainelDados.IsVisible = !PainelDados.IsVisible;
+
+        BotaoDados.Text = PainelDados.IsVisible
+            ? "Dados cadastrais  ▴"
+            : "Dados cadastrais  ▾";
+    }
+
+    private async void OnTrocarFotoClicked(object sender, EventArgs e)
+    {
+        if (!_proprio || _membro == null || _trocandoFoto)
+            return;
+
+        string? idAuth = _auth.UsuarioLogado?.IdAuth;
+
+        if (string.IsNullOrEmpty(idAuth))
+            return;
+
+        _trocandoFoto = true;
+        BotaoFoto.IsEnabled = false;
+
+        try
+        {
+            FileResult? foto = await FilePicker.Default.PickAsync(new PickOptions
+            {
+                PickerTitle = "Escolha a sua foto",
+                FileTypes = FilePickerFileType.Images
+            });
+
+            if (foto == null)
+                return;
+
+            await _fotos.TrocarAsync(_membro, foto, idAuth);
+
+            await CarregarFotoAsync();
+        }
+        catch (InvalidOperationException ex)
+        {
+            await DisplayAlert("Foto", ex.Message, "OK");
+        }
+        catch (Exception)
+        {
+            await DisplayAlert(
+                "Foto",
+                "Não foi possível enviar a foto. Verifique a internet e tente novamente.",
+                "OK");
+        }
+        finally
+        {
+            _trocandoFoto = false;
+            BotaoFoto.IsEnabled = true;
+        }
     }
 
     private async void OnEditarClicked(object sender, EventArgs e)

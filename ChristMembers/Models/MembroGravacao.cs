@@ -95,6 +95,9 @@ public class MembroGravacao : BaseModel
     [Column("fl_ConsentimentoSaude")]
     public bool ConsentimentoSaude { get; set; }
 
+    [Column("ds_SiglaCongregacao")]
+    public string? SiglaCongregacao { get; set; }
+
     public static MembroGravacao De(Membro m) => new()
     {
         Id = m.Id,
@@ -125,6 +128,7 @@ public class MembroGravacao : BaseModel
         PossuiDeficiencia = m.PossuiDeficiencia,
         IdDeficiencia = m.IdDeficiencia,
         DeficienciaOutros = m.DeficienciaOutros,
-        ConsentimentoSaude = m.ConsentimentoSaude
+        ConsentimentoSaude = m.ConsentimentoSaude,
+        SiglaCongregacao = m.SiglaCongregacao
     };
 }
