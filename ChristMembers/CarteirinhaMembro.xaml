@@ -153,6 +153,27 @@
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
 
+                    <!-- CNPJ e endereço da igreja -->
+                    <VerticalStackLayout Padding="16,0,16,12" Spacing="8">
+
+                        <VerticalStackLayout Spacing="1" IsVisible="{Binding TemEnderecoIgreja}">
+                            <Label Text="Dados da Igreja" FontSize="11" TextColor="#9AA1BC" />
+                            <Label Text="{Binding EnderecoIgreja}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   LineHeight="1.25"
+                                   TextColor="#1B2559" />
+                        </VerticalStackLayout>
+                        
+                        <VerticalStackLayout Spacing="1" IsVisible="{Binding TemCnpjIgreja}">
+                            <Label Text="{Binding CnpjIgreja}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="14"
+                                   TextColor="#1B2559" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                    
                     <!-- Rodapé -->
                     <Grid BackgroundColor="#F4F6FB" Padding="16,12">
                         <Label Text="É assegurada, nos termos da lei, a prestação de assistência religiosa nas entidades civis e militares de internação coletiva. Artigo 5, inciso VII, CF."

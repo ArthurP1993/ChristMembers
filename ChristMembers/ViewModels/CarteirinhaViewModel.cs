@@ -25,6 +25,14 @@ public class CarteirinhaViewModel : INotifyPropertyChanged
 
     public string NomeIgreja => IgrejaConfig.Nome;
 
+    public string CnpjIgreja => IgrejaConfig.Cnpj;
+
+    public string EnderecoIgreja => IgrejaConfig.Endereco;
+
+    public bool TemCnpjIgreja => !string.IsNullOrWhiteSpace(IgrejaConfig.Cnpj);
+
+    public bool TemEnderecoIgreja => !string.IsNullOrWhiteSpace(IgrejaConfig.Endereco);
+
     public string TituloCredencial => "Credencial de Membro";
 
     public string Cargo { get; }
@@ -110,8 +118,6 @@ public class CarteirinhaViewModel : INotifyPropertyChanged
 
         if (!string.IsNullOrWhiteSpace(membro.SiglaCongregacao))
             AdicionarCampo("Congregação", membro.SiglaCongregacao.Trim().ToUpperInvariant());
-
-        AdicionarCampo("Telefone da igreja", IgrejaConfig.Telefone);
 
         // ----- Dados cadastrais -----
 
