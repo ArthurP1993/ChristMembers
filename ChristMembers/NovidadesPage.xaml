@@ -50,10 +50,10 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border StrokeShape="RoundRectangle 24"
-                            Stroke="#E4E8F4"
-                            StrokeThickness="1"
-                            BackgroundColor="White"
-                            Padding="0">
+                Stroke="#E4E8F4"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="0">
                         <Border.Shadow>
                             <Shadow Brush="#1B2F7A" Opacity="0.10" Radius="20" Offset="0,8" />
                         </Border.Shadow>
@@ -61,64 +61,67 @@
                         <VerticalStackLayout Spacing="0">
 
                             <Image Source="{Binding CaminhoFoto}"
-                                   IsVisible="{Binding TemFoto}"
-                                   Aspect="AspectFit"
-                                   MaximumHeightRequest="460"
-                                   BackgroundColor="#EEF0F7" />
+                       IsVisible="{Binding TemFoto}"
+                       Aspect="AspectFit"
+                       MaximumHeightRequest="460"
+                       BackgroundColor="#EEF0F7" />
 
                             <VerticalStackLayout Padding="20" Spacing="10">
 
-                                <HorizontalStackLayout Spacing="8">
+                                <!-- Trocado para FlexLayout para quebrar a linha automaticamente se faltar espaço -->
+                                <FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
                                     <Border IsVisible="{Binding TemDataEvento}"
-                                            StrokeShape="RoundRectangle 14"
-                                            StrokeThickness="0"
-                                            BackgroundColor="#FFF0CC"
-                                            Padding="12,5">
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="#FFF0CC"
+                                Padding="12,5"
+                                Margin="0,0,8,8">
                                         <Label Text="{Binding TextoEvento, StringFormat='📅 {0}'}"
-                                               FontFamily="OpenSansSemibold"
-                                               FontSize="13"
-                                               TextColor="#8A5A00" />
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   TextColor="#8A5A00" />
                                     </Border>
 
                                     <Border IsVisible="{Binding PodeConfirmar}"
-                                            StrokeShape="RoundRectangle 14"
-                                            StrokeThickness="0"
-                                            BackgroundColor="#E3F6EC"
-                                            Padding="12,5">
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="#E3F6EC"
+                                Padding="12,5"
+                                Margin="0,0,8,8">
                                         <Label Text="✋ Confirme sua presença"
-                                               FontFamily="OpenSansSemibold"
-                                               FontSize="13"
-                                               TextColor="#1F6B47" />
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="13"
+                                   TextColor="#1F6B47" />
                                     </Border>
-                                </HorizontalStackLayout>
+                                </FlexLayout>
 
                                 <Label Text="{Binding Titulo}"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="21"
-                                       TextColor="#1B2559" />
+                           FontFamily="OpenSansSemibold"
+                           FontSize="21"
+                           TextColor="#1B2559" />
 
                                 <Label Text="{Binding Descricao}"
-                                       FontSize="15"
-                                       LineHeight="1.4"
-                                       TextColor="#4A5275" />
+                           FontSize="15"
+                           LineHeight="1.4"
+                           TextColor="#4A5275" />
 
                                 <Label Text="{Binding DataPublicacao, StringFormat='Publicado em {0:dd/MM/yyyy}'}"
-                                       FontSize="12"
-                                       TextColor="#9AA1BC"
-                                       Margin="0,4,0,0" />
+                           FontSize="12"
+                           TextColor="#9AA1BC"
+                           Margin="0,4,0,0" />
 
                                 <Button Text="Remover"
-                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=EhAdmin}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=ExcluirCommand}"
-                                        CommandParameter="{Binding .}"
-                                        FontSize="14"
-                                        TextColor="#C62828"
-                                        BackgroundColor="#FDECEC"
-                                        CornerRadius="14"
-                                        HeightRequest="42"
-                                        Padding="18,0"
-                                        HorizontalOptions="End"
-                                        Margin="0,8,0,0" />
+                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=EhAdmin}"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NovidadesViewModel}}, Path=ExcluirCommand}"
+                            CommandParameter="{Binding .}"
+                            FontSize="14"
+                            TextColor="#C62828"
+                            BackgroundColor="#FDECEC"
+                            CornerRadius="14"
+                            HeightRequest="42"
+                           Padding="18,0"
+                            HorizontalOptions="End"
+                            Margin="0,8,0,0" />
                             </VerticalStackLayout>
 
                         </VerticalStackLayout>

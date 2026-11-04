@@ -121,29 +121,30 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=SalvarAnotacaoCommand}"
                                     CommandParameter="{Binding .}" />
 
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                <Button Grid.Column="0"
-                                        Text="{Binding TextoProximaAcao}"
+                            <VerticalStackLayout Spacing="10" Margin="0,4,0,0">
+                                <Button Text="{Binding TextoProximaAcao}"
                                         FontFamily="OpenSansSemibold"
                                         FontSize="14"
                                         TextColor="White"
                                         BackgroundColor="#1B2F7A"
                                         CornerRadius="14"
-                                        HeightRequest="44"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=AlterarStatusCommand}"
+                                        MinimumHeightRequest="44"
+                                        LineBreakMode="WordWrap"
+                                        Padding="16,10"
+                                        HorizontalOptions="Fill"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaPedidosOracaoViewModel}}, Path=AlterarStatusCommand}"
                                         CommandParameter="{Binding .}" />
 
-                                <Button Grid.Column="1"
-                                        Text="Excluir"
+                                <Button Text="Arquivar"
                                         FontSize="14"
-                                        TextColor="#C62828"
-                                        BackgroundColor="#FDECEC"
+                                        TextColor="#8A5A00"
+                                        BackgroundColor="#FFF0CC"
                                         CornerRadius="14"
                                         HeightRequest="44"
-                                        Padding="16,0"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaVisitantesViewModel}}, Path=ExcluirCommand}"
+                                        HorizontalOptions="Fill"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListaPedidosOracaoViewModel}}, Path=ArquivarCommand}"
                                         CommandParameter="{Binding .}" />
-                            </Grid>
+                            </VerticalStackLayout>
 
                         </VerticalStackLayout>
                     </Border>
