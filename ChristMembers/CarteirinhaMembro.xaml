@@ -101,6 +101,14 @@
                                    FontSize="13"
                                    TextColor="#B07A12" />
 
+                            <VerticalStackLayout Spacing="1" IsVisible="{Binding TemCargo}">
+                                <Label Text="Cargo" FontSize="11" TextColor="#9AA1BC" />
+                                <Label Text="{Binding Cargo}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       TextColor="#8A5A00" />
+                            </VerticalStackLayout>
+                            
                             <VerticalStackLayout Spacing="1">
                                 <Label Text="Data de nascimento" FontSize="11" TextColor="#9AA1BC" />
                                 <Label Text="{Binding NascimentoTexto}"

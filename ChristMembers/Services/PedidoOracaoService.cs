@@ -123,7 +123,9 @@ public class PedidoOracaoService
 
         try
         {
-            await cliente.From<PedidoOracao>().Update(pedido);
+            await cliente
+                .From<PedidoOracaoGravacao>()
+                .Update(PedidoOracaoGravacao.De(pedido));
         }
         catch
         {
@@ -159,7 +161,7 @@ public class PedidoOracaoService
         if (escolhida == null)
             throw new InvalidOperationException("Categoria não encontrada no banco.");
 
-        PedidoOracao pedido = new()
+        PedidoOracaoGravacao pedido = new()
         {
             Nome = anonimo ? string.Empty : nome.Trim(),
             Anonimo = anonimo,
@@ -171,7 +173,7 @@ public class PedidoOracaoService
         };
 
         await cliente
-            .From<PedidoOracao>()
+            .From<PedidoOracaoGravacao>()
             .Insert(pedido, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
     }
 
@@ -227,4 +229,5 @@ public class PedidoOracaoService
         [JsonProperty("nu_Oracoes")]
         public int Oracoes { get; set; }
     }
+
 }

@@ -25,7 +25,11 @@ public class CarteirinhaViewModel : INotifyPropertyChanged
 
     public string NomeIgreja => IgrejaConfig.Nome;
 
-    public string TituloCredencial { get; }
+    public string TituloCredencial => "Credencial de Membro";
+
+    public string Cargo { get; }
+
+    public bool TemCargo => !string.IsNullOrWhiteSpace(Cargo);
 
     public string Nome { get; }
 
@@ -78,11 +82,7 @@ public class CarteirinhaViewModel : INotifyPropertyChanged
         Iniciais = MontarIniciais(membro.Nome);
         Numero = $"Nº {membro.Id:D4}";
 
-        string cargo = string.IsNullOrWhiteSpace(membro.NomeConsagracao)
-            ? "Membro"
-            : membro.NomeConsagracao.Trim();
-
-        TituloCredencial = $"Credencial de {cargo}";
+        Cargo = membro.NomeConsagracao?.Trim() ?? string.Empty;
 
         DateTime? nascimento = membro.DataNascimento;
         DateTime? entrada = membro.DataEntrada;
