@@ -12,6 +12,8 @@ public class NovidadeService
 
     private readonly SupabaseServico _supabase;
     private readonly AuthService _auth;
+    // Quantos dias depois do evento a novidade e as confirmações continuam guardadas.
+    private const int DiasGuardarConfirmacoes = 30;
 
     public ObservableCollection<Novidade> Novidades { get; } = new();
 
@@ -40,7 +42,10 @@ public class NovidadeService
         // Só o admin pode apagar. As vencidas já ficam invisíveis para os visitantes.
         if (_auth.UsuarioLogado?.Cargo == AuthService.CargoAdmin)
         {
-            foreach (Novidade vencida in todas.Where(n => n.Expirada).ToList())
+            foreach (Novidade vencida in todas
+                .Where(n => n.DataEvento.HasValue
+                            && n.DataEvento.Value.Date < DateTime.Today.AddDays(-DiasGuardarConfirmacoes))
+                .ToList())
             {
                 try
                 {
@@ -163,5 +168,18 @@ public class NovidadeService
         {
             // A novidade já saiu do banco; uma foto sobrando não quebra nada.
         }
+    }
+
+    // Só o administrador: todas as novidades que pedem confirmação, inclusive as já encerradas.
+    public async Task<List<Novidade>> ListarComConfirmacaoAsync()
+    {
+        Client cliente = await _supabase.ObterAsync();
+
+        var resposta = await cliente
+            .From<Novidade>()
+            .Where(n => n.PermiteConfirmacao == true)
+            .Get();
+
+        return resposta.Models;
     }
 }

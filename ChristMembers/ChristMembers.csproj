@@ -127,6 +127,9 @@
 	  <MauiXaml Update="PainelAdmin.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="PresencasPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="PublicarNovidadePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

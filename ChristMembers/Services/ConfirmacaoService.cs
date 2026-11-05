@@ -67,4 +67,14 @@ public class ConfirmacaoService
 
         return resposta.Models.OrderBy(c => c.Nome).ToList();
     }
+
+    // Só o administrador consegue ler todas (as regras do banco garantem isso).
+    public async Task<List<ConfirmacaoPresenca>> ListarTodasAsync()
+    {
+        var cliente = await _supabase.ObterAsync();
+
+        var resposta = await cliente.From<ConfirmacaoPresenca>().Get();
+
+        return resposta.Models;
+    }
 }
