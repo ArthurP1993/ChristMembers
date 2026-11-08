@@ -9,6 +9,8 @@ namespace ChristMembers.ViewModels;
 
 public class NovidadeDetalheViewModel : INotifyPropertyChanged
 {
+    private const int LimiteAcompanhantes = 10;
+
     private static readonly Color Azul = Color.FromArgb("#1B2F7A");
     private static readonly Color AzulClaro = Color.FromArgb("#E4EBFF");
 
@@ -20,7 +22,11 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
     private Membro? _meuCadastro;
     private ConfirmacaoPresenca? _minhaConfirmacao;
 
-    private bool _confirmouVisitante;
+    private long? _confirmacaoId;
+    private string _confirmacaoToken = string.Empty;
+    private string _nomeConfirmado = string.Empty;
+    private List<string> _acompanhantes = new();
+
     private bool _abaMembro = true;
     private bool _loginFeitoAqui;
     private bool _adminAoAbrir;
@@ -28,8 +34,6 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
 
     private string _nome = string.Empty;
     private string _telefone = string.Empty;
-    private int _pessoas = 1;
-    private string _nomeConfirmado = string.Empty;
     private string _emailLogin = string.Empty;
     private string _senhaLogin = string.Empty;
     private string _mensagemErro = string.Empty;
@@ -62,17 +66,23 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         set => SetProperty(ref _senhaLogin, value ?? string.Empty);
     }
 
-    public string TextoPessoas => _pessoas == 1 ? "1 pessoa" : $"{_pessoas} pessoas";
-
     public string NomeMembro => _meuCadastro?.Nome ?? string.Empty;
 
-    public string TextoConfirmadoLogado => _minhaConfirmacao == null
-        ? string.Empty
-        : _minhaConfirmacao.Pessoas == 1
-            ? "Você confirmou 1 pessoa."
-            : $"Você confirmou {_minhaConfirmacao.Pessoas} pessoas.";
+    public string TextoConfirmadoLogado => $"Presença confirmada para {_nomeConfirmado}.";
 
     public string TextoConfirmadoVisitante => $"Obrigado, {_nomeConfirmado}! Esperamos você.";
+
+    public bool TemAcompanhantes => _acompanhantes.Count > 0;
+
+    public string TextoAcompanhantes => _acompanhantes.Count == 1
+        ? $"Acompanhante: {_acompanhantes[0]}"
+        : $"Acompanhantes: {string.Join(", ", _acompanhantes)}";
+
+    public bool PodeAdicionarAcompanhantes => _acompanhantes.Count < LimiteAcompanhantes;
+
+    public string TextoBotaoAcompanhantes => TemAcompanhantes
+        ? "Adicionar mais acompanhantes"
+        : "Adicionar acompanhantes";
 
     public string MensagemErro
     {
@@ -90,7 +100,7 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         _meuCadastro != null
         && CpfValidador.SomenteDigitos(_meuCadastro.Telefone).Length is 10 or 11;
 
-    private bool Concluido => _minhaConfirmacao != null || _confirmouVisitante;
+    private bool Concluido => _confirmacaoId.HasValue;
 
     public bool PodeConfirmar => _novidade?.PodeConfirmar == true;
 
@@ -105,10 +115,9 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
     public bool MostrarPainelMembro =>
         PodeConfirmar && !Concluido && Logado && MembroPronto;
 
-    public bool MostrarConfirmadoLogado => PodeConfirmar && _minhaConfirmacao != null;
+    public bool MostrarConfirmadoLogado => PodeConfirmar && Concluido && Logado;
 
-    public bool MostrarConfirmadoVisitante =>
-        PodeConfirmar && _minhaConfirmacao == null && _confirmouVisitante;
+    public bool MostrarConfirmadoVisitante => PodeConfirmar && Concluido && !Logado;
 
     public bool MostrarAdmin => _adminAoAbrir && _novidade?.PermiteConfirmacao == true;
 
@@ -126,8 +135,7 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
     public ICommand ConfirmarFormularioCommand { get; }
     public ICommand CancelarCommand { get; }
     public ICommand OutraPessoaCommand { get; }
-    public ICommand MaisCommand { get; }
-    public ICommand MenosCommand { get; }
+    public ICommand AdicionarAcompanhantesCommand { get; }
     public ICommand VerConfirmadosCommand { get; }
 
     public NovidadeDetalheViewModel(
@@ -146,8 +154,7 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         ConfirmarFormularioCommand = new Command(async () => await ConfirmarComFormulario());
         CancelarCommand = new Command(async () => await Cancelar());
         OutraPessoaCommand = new Command(OutraPessoa);
-        MaisCommand = new Command(() => AlterarPessoas(+1));
-        MenosCommand = new Command(() => AlterarPessoas(-1));
+        AdicionarAcompanhantesCommand = new Command(async () => await AbrirAcompanhantes());
         VerConfirmadosCommand = new Command(async () => await VerConfirmados());
     }
 
@@ -191,6 +198,18 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         {
             _meuCadastro = await _membros.ObterPorAuthAsync(idAuth);
             _minhaConfirmacao = await _confirmacoes.ObterMinhaAsync(_novidade.Id, idAuth);
+
+            if (_minhaConfirmacao != null)
+            {
+                _confirmacaoId = _minhaConfirmacao.Id;
+                _confirmacaoToken = _minhaConfirmacao.Token ?? string.Empty;
+                _nomeConfirmado = _minhaConfirmacao.Nome;
+                _acompanhantes = await _confirmacoes.ListarAcompanhantesAsync(_minhaConfirmacao.Id);
+            }
+            else
+            {
+                LimparConfirmacao();
+            }
         }
         catch (Exception)
         {
@@ -208,20 +227,21 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         Atualizar();
     }
 
-    private void AlterarPessoas(int delta)
+    private void OutraPessoa()
     {
-        _pessoas = Math.Clamp(_pessoas + delta, 1, 10);
+        LimparConfirmacao();
+        MensagemErro = string.Empty;
 
         Atualizar();
     }
 
-    private void OutraPessoa()
+    private void LimparConfirmacao()
     {
-        _confirmouVisitante = false;
+        _minhaConfirmacao = null;
+        _confirmacaoId = null;
+        _confirmacaoToken = string.Empty;
         _nomeConfirmado = string.Empty;
-        MensagemErro = string.Empty;
-
-        Atualizar();
+        _acompanhantes = new List<string>();
     }
 
     private async Task Entrar()
@@ -306,11 +326,18 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         _ocupado = true;
         MensagemErro = string.Empty;
 
-        string? idAuth = _auth.UsuarioLogado?.IdAuth;
+        bool confirmou = false;
 
         try
         {
-            await _confirmacoes.EnviarAsync(_novidade.Id, nome, telefone, _pessoas, idAuth);
+            RetornoConfirmacao retorno = await _confirmacoes.ConfirmarAsync(_novidade.Id, nome, telefone);
+
+            _confirmacaoId = retorno.Id;
+            _confirmacaoToken = retorno.Token;
+            _nomeConfirmado = nome;
+            _acompanhantes = new List<string>();
+
+            string? idAuth = _auth.UsuarioLogado?.IdAuth;
 
             if (!string.IsNullOrEmpty(idAuth))
             {
@@ -323,15 +350,10 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
                 }
             }
 
-            if (_minhaConfirmacao == null)
-            {
-                _confirmouVisitante = true;
-                _nomeConfirmado = nome;
-            }
-
             Nome = string.Empty;
             Telefone = string.Empty;
-            _pessoas = 1;
+
+            confirmou = true;
         }
         catch (Exception ex)
         {
@@ -343,6 +365,45 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
 
             Atualizar();
         }
+
+        if (confirmou)
+            await PerguntarAcompanhantes();
+    }
+
+    private async Task PerguntarAcompanhantes()
+    {
+        bool levaMais = await Shell.Current.DisplayAlert(
+            "Presença confirmada ✓",
+            "Você vai levar mais pessoas?",
+            "Sim",
+            "Não");
+
+        if (levaMais)
+            await AbrirAcompanhantes();
+    }
+
+    private async Task AbrirAcompanhantes()
+    {
+        if (_confirmacaoId == null || _novidade == null)
+            return;
+
+        Action<List<string>> aoConcluir = nomes =>
+        {
+            _acompanhantes.AddRange(nomes);
+
+            Atualizar();
+        };
+
+        await Shell.Current.GoToAsync(
+            nameof(AcompanhantesPage),
+            new ShellNavigationQueryParameters
+            {
+                { "IdConfirmacao", _confirmacaoId.Value },
+                { "Token", _confirmacaoToken },
+                { "Titulo", _novidade.Titulo },
+                { "Existentes", _acompanhantes.Count },
+                { "AoConcluir", aoConcluir }
+            });
     }
 
     private async Task Cancelar()
@@ -352,7 +413,7 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
 
         bool confirmou = await Shell.Current.DisplayAlert(
             "Cancelar presença",
-            "Deseja cancelar a sua confirmação?",
+            "Deseja cancelar a sua confirmação? Os acompanhantes também serão retirados.",
             "Cancelar presença",
             "Voltar");
 
@@ -365,8 +426,7 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         {
             await _confirmacoes.CancelarAsync(_minhaConfirmacao);
 
-            _minhaConfirmacao = null;
-            _confirmouVisitante = false;
+            LimparConfirmacao();
             MensagemErro = string.Empty;
         }
         catch (Exception)
@@ -401,8 +461,15 @@ public class NovidadeDetalheViewModel : INotifyPropertyChanged
         if (texto.Contains("23505") || texto.Contains("duplicate", StringComparison.OrdinalIgnoreCase))
             return "Esta presença já foi confirmada (mesmo telefone ou mesma conta).";
 
-        if (texto.Contains("42501") || texto.Contains("row-level security", StringComparison.OrdinalIgnoreCase))
+        if (texto.Contains("22023"))
+            return "Confira o nome e o telefone e tente de novo.";
+
+        if (texto.Contains("42501")
+            || texto.Contains("row-level security", StringComparison.OrdinalIgnoreCase)
+            || texto.Contains("encerradas", StringComparison.OrdinalIgnoreCase))
+        {
             return "As confirmações deste evento estão encerradas.";
+        }
 
         return "Não foi possível confirmar. Verifique a internet e tente novamente.";
     }

@@ -20,6 +20,8 @@ public class ResumoEvento
 
     public int Confirmacoes { get; init; }
 
+    public int Acompanhantes { get; init; }
+
     public int Pessoas { get; init; }
 
     public int Membros { get; init; }
@@ -32,7 +34,7 @@ public class ResumoEvento
 
     public string TextoDetalhe => Confirmacoes == 0
         ? "Ninguém confirmou ainda"
-        : $"{Confirmacoes} confirmação(ões) · {Membros} membro(s) · {Visitantes} visitante(s)";
+        : $"{Confirmacoes} confirmação(ões) · {Acompanhantes} acompanhante(s) · {Membros} membro(s) · {Visitantes} visitante(s)";
 }
 
 public class PresencasViewModel : INotifyPropertyChanged
@@ -90,6 +92,11 @@ public class PresencasViewModel : INotifyPropertyChanged
         {
             List<Novidade> eventos = await _novidades.ListarComConfirmacaoAsync();
             List<ConfirmacaoPresenca> confirmacoes = await _confirmacoes.ListarTodasAsync();
+            List<ConfirmacaoAcompanhante> acompanhantes = await _confirmacoes.ListarTodosAcompanhantesAsync();
+
+            Dictionary<long, int> extrasPorConfirmacao = acompanhantes
+                .GroupBy(a => a.IdConfirmacao)
+                .ToDictionary(g => g.Key, g => g.Count());
 
             Dictionary<long, List<ConfirmacaoPresenca>> porEvento = confirmacoes
                 .GroupBy(c => c.IdNovidade)
@@ -114,13 +121,16 @@ public class PresencasViewModel : INotifyPropertyChanged
 
                     int membros = lista.Count(c => c.EhMembro);
 
+                    int extras = lista.Sum(c => extrasPorConfirmacao.TryGetValue(c.Id, out int q) ? q : 0);
+
                     return new ResumoEvento
                     {
                         Novidade = n,
                         TextoData = $"📅 {dia.ToString("dddd, dd/MM/yyyy", PtBr)}",
                         Situacao = situacao,
                         Confirmacoes = lista.Count,
-                        Pessoas = lista.Sum(c => c.Pessoas),
+                        Acompanhantes = extras,
+                        Pessoas = lista.Count + extras,
                         Membros = membros,
                         Visitantes = lista.Count - membros
                     };

@@ -21,12 +21,13 @@ public class ConfirmacaoPresenca : BaseModel
     [Column("ds_Telefone")]
     public string Telefone { get; set; } = string.Empty;
 
-    [Column("nu_Pessoas")]
-    public int Pessoas { get; set; } = 1;
-
     [Column("fl_Membro", ignoreOnInsert: true, ignoreOnUpdate: true)]
     public bool EhMembro { get; set; }
 
     [Column("dt_Cadastro", ignoreOnInsert: true, ignoreOnUpdate: true)]
     public DateTime DataCadastro { get; set; }
+
+    // Chave secreta da confirmação. Só o dono e o administrador conseguem ler.
+    [Column("cd_Token", ignoreOnInsert: true, ignoreOnUpdate: true)]
+    public string? Token { get; set; }
 }

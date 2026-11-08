@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChristMembers.AcompanhantesPage"
+             Title="Acompanhantes"
+             BackgroundColor="#F4F6FB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,20,20,48" Spacing="18">
+
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Quem vai com você?"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="26"
+                       TextColor="#1B2559"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="{Binding Titulo}"
+                       FontSize="15"
+                       TextColor="#B07A12" />
+                <Label Text="Escreva o nome de cada pessoa. Toque em ＋ para incluir mais nomes."
+                       FontSize="14"
+                       LineHeight="1.35"
+                       TextColor="#6B7390" />
+            </VerticalStackLayout>
+
+            <Border StrokeShape="RoundRectangle 24"
+                    Stroke="#E4E8F4"
+                    StrokeThickness="1"
+                    BackgroundColor="White"
+                    Padding="20">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Nomes}"
+                                         Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Entry Grid.Column="0"
+                                           Placeholder="Nome da pessoa"
+                                           MaxLength="120"
+                                           TextColor="#1B2559"
+                                           PlaceholderColor="#9AA1BC"
+                                           Text="{Binding Nome}" />
+
+                                    <Button Grid.Column="1"
+                                            Text="✕"
+                                            FontSize="16"
+                                            WidthRequest="44"
+                                            HeightRequest="44"
+                                            CornerRadius="22"
+                                            Padding="0"
+                                            TextColor="#C62828"
+                                            BackgroundColor="#FDECEC"
+                                            SemanticProperties.Description="Remover este nome"
+                                            Clicked="OnRemoverClicked" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Button Text="＋  Adicionar outro nome"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="15"
+                            TextColor="#1B2F7A"
+                            BackgroundColor="#E4EBFF"
+                            CornerRadius="14"
+                            HeightRequest="46"
+                            IsEnabled="{Binding PodeAdicionar}"
+                            Command="{Binding AdicionarCommand}" />
+
+                    <Label Text="{Binding TextoLimite}"
+                           FontSize="12"
+                           TextColor="#6B7390" />
+
+                    <Label Text="{Binding MensagemErro}"
+                           IsVisible="{Binding TemErro}"
+                           TextColor="#C62828"
+                           FontSize="14" />
+
+                    <Button Text="Confirmar acompanhantes"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="17"
+                            TextColor="White"
+                            BackgroundColor="#1B2F7A"
+                            CornerRadius="16"
+                            HeightRequest="52"
+                            Command="{Binding ConfirmarCommand}" />
+
+                    <Button Text="Agora não"
+                            FontSize="14"
+                            TextColor="#6B7390"
+                            BackgroundColor="Transparent"
+                            Command="{Binding PularCommand}" />
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Usaremos os nomes só para organizar este evento. Inclua apenas pessoas que sabem que estão sendo indicadas."
+                   FontSize="12"
+                   LineHeight="1.3"
+                   TextColor="#6B7390" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

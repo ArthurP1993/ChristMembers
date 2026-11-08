@@ -46,6 +46,7 @@ namespace ChristMembers
             builder.Services.AddTransient<NovidadeDetalheViewModel>();
             builder.Services.AddTransient<ConfirmadosViewModel>();
             builder.Services.AddTransient<PresencasViewModel>();
+            builder.Services.AddTransient<AcompanhantesViewModel>();
 
             // Telas
             builder.Services.AddTransient<LoginPage>();
@@ -66,6 +67,7 @@ namespace ChristMembers
             builder.Services.AddTransient<NovidadeDetalhePage>();
             builder.Services.AddTransient<ConfirmadosPage>();
             builder.Services.AddTransient<PresencasPage>();
+            builder.Services.AddTransient<AcompanhantesPage>();
 
             return builder.Build();
         }

@@ -39,8 +39,14 @@ public class VisitanteService
         var cliente = await _supabase.ObterAsync();
 
         await cliente
-            .From<Visitante>()
-            .Insert(visitante, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
+            .From<VisitanteGravacao>()
+            .Insert(
+                new VisitanteGravacao
+                {
+                    Nome = visitante.Nome.Trim(),
+                    Telefone = visitante.Telefone.Trim()
+                },
+                new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
     }
 
     public async Task AlterarStatus(Visitante visitante, StatusVisitante status)
@@ -80,18 +86,29 @@ public class VisitanteService
 
         try
         {
-            var resposta = await cliente.From<Visitante>().Update(visitante);
-
-            // A data do contato é preenchida pelo banco.
-            Visitante? atualizado = resposta.Models.FirstOrDefault();
-
-            if (atualizado != null)
-                visitante.DataContato = atualizado.DataContato;
+            await cliente
+                .From<VisitanteGravacao>()
+                .Update(VisitanteGravacao.De(visitante));
         }
         catch
         {
             reverter();
             throw;
+        }
+
+        // A data do contato é preenchida pelo banco: busca de novo para mostrar.
+        try
+        {
+            var atual = await cliente
+                .From<Visitante>()
+                .Where(v => v.Id == visitante.Id)
+                .Get();
+
+            visitante.DataContato = atual.Models.FirstOrDefault()?.DataContato;
+        }
+        catch (Exception)
+        {
+            // A gravação deu certo. A data aparece na próxima vez que a lista abrir.
         }
     }
 

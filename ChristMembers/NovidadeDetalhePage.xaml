@@ -131,38 +131,10 @@
                                FontSize="17"
                                TextColor="#1B2559" />
 
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Quantas pessoas vão (contando com você)?"
-                                   FontSize="13"
-                                   TextColor="#6B7390" />
-                            <HorizontalStackLayout Spacing="14">
-                                <Button Text="−"
-                                        FontSize="22"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-                                        CornerRadius="24"
-                                        Padding="0"
-                                        TextColor="#1B2F7A"
-                                        BackgroundColor="#E4EBFF"
-                                        Command="{Binding MenosCommand}" />
-                                <Label Text="{Binding TextoPessoas}"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="20"
-                                       TextColor="#1B2559"
-                                       WidthRequest="110"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalOptions="Center" />
-                                <Button Text="+"
-                                        FontSize="22"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-                                        CornerRadius="24"
-                                        Padding="0"
-                                        TextColor="#1B2F7A"
-                                        BackgroundColor="#E4EBFF"
-                                        Command="{Binding MaisCommand}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
+                        <Label Text="Depois de confirmar, vamos perguntar se você vai levar mais pessoas."
+                               FontSize="13"
+                               LineHeight="1.3"
+                               TextColor="#6B7390" />
 
                         <Button Text="Confirmar presença"
                                 FontFamily="OpenSansSemibold"
@@ -174,7 +146,7 @@
                                 Command="{Binding ConfirmarMembroCommand}" />
                     </VerticalStackLayout>
 
-                    <!-- Formulário básico -->
+                    <!-- Formulário básico (visitante) -->
                     <VerticalStackLayout IsVisible="{Binding MostrarFormulario}" Spacing="12">
 
                         <Entry Placeholder="Seu nome"
@@ -192,39 +164,6 @@
                             </Entry.Behaviors>
                         </Entry>
 
-                        <VerticalStackLayout Spacing="6">
-                            <Label Text="Quantas pessoas vão (contando com você)?"
-                                   FontSize="13"
-                                   TextColor="#6B7390" />
-                            <HorizontalStackLayout Spacing="14">
-                                <Button Text="−"
-                                        FontSize="22"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-                                        CornerRadius="24"
-                                        Padding="0"
-                                        TextColor="#1B2F7A"
-                                        BackgroundColor="#E4EBFF"
-                                        Command="{Binding MenosCommand}" />
-                                <Label Text="{Binding TextoPessoas}"
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="20"
-                                       TextColor="#1B2559"
-                                       WidthRequest="110"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalOptions="Center" />
-                                <Button Text="+"
-                                        FontSize="22"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-                                        CornerRadius="24"
-                                        Padding="0"
-                                        TextColor="#1B2F7A"
-                                        BackgroundColor="#E4EBFF"
-                                        Command="{Binding MaisCommand}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-
                         <Button Text="Confirmar presença"
                                 FontFamily="OpenSansSemibold"
                                 FontSize="17"
@@ -234,7 +173,7 @@
                                 HeightRequest="52"
                                 Command="{Binding ConfirmarFormularioCommand}" />
 
-                        <Label Text="Usaremos o seu nome e telefone só para organizar este evento."
+                        <Label Text="Depois de confirmar, vamos perguntar se você vai levar mais pessoas. Usaremos o seu nome e telefone só para organizar este evento."
                                FontSize="12"
                                LineHeight="1.3"
                                TextColor="#6B7390" />
@@ -246,9 +185,28 @@
                                FontFamily="OpenSansSemibold"
                                FontSize="20"
                                TextColor="#2E7D5B" />
+
                         <Label Text="{Binding TextoConfirmadoLogado}"
                                FontSize="15"
                                TextColor="#4A5275" />
+
+                        <Label Text="{Binding TextoAcompanhantes}"
+                               IsVisible="{Binding TemAcompanhantes}"
+                               FontSize="15"
+                               LineHeight="1.35"
+                               TextColor="#1B2559" />
+
+                        <Button Text="{Binding TextoBotaoAcompanhantes}"
+                                IsVisible="{Binding PodeAdicionarAcompanhantes}"
+                                FontSize="14"
+                                TextColor="#1B2F7A"
+                                BackgroundColor="#E4EBFF"
+                                CornerRadius="14"
+                                HeightRequest="44"
+                                HorizontalOptions="Start"
+                                Padding="18,0"
+                                Command="{Binding AdicionarAcompanhantesCommand}" />
+
                         <Button Text="Cancelar presença"
                                 FontSize="14"
                                 TextColor="#C62828"
@@ -266,17 +224,39 @@
                                FontFamily="OpenSansSemibold"
                                FontSize="20"
                                TextColor="#2E7D5B" />
+
                         <Label Text="{Binding TextoConfirmadoVisitante}"
                                FontSize="15"
                                LineHeight="1.35"
                                TextColor="#4A5275" />
-                        <Label Text="Para cancelar, fale com a liderança da igreja."
-                               FontSize="12"
-                               TextColor="#6B7390" />
-                        <Button Text="Confirmar outra pessoa"
+
+                        <Label Text="{Binding TextoAcompanhantes}"
+                               IsVisible="{Binding TemAcompanhantes}"
+                               FontSize="15"
+                               LineHeight="1.35"
+                               TextColor="#1B2559" />
+
+                        <Button Text="{Binding TextoBotaoAcompanhantes}"
+                                IsVisible="{Binding PodeAdicionarAcompanhantes}"
                                 FontSize="14"
                                 TextColor="#1B2F7A"
                                 BackgroundColor="#E4EBFF"
+                                CornerRadius="14"
+                                HeightRequest="44"
+                                HorizontalOptions="Start"
+                                Padding="18,0"
+                                Command="{Binding AdicionarAcompanhantesCommand}" />
+
+                        <Label Text="Para cancelar, fale com a liderança da igreja."
+                               FontSize="12"
+                               TextColor="#6B7390" />
+
+                        <Button Text="Confirmar outra pessoa"
+                                FontSize="14"
+                                TextColor="#1B2F7A"
+                                BackgroundColor="Transparent"
+                                BorderColor="#C9D3F5"
+                                BorderWidth="1"
                                 CornerRadius="14"
                                 HeightRequest="44"
                                 HorizontalOptions="Start"

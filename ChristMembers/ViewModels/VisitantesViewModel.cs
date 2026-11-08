@@ -116,24 +116,21 @@ public class VisitantesViewModel : INotifyPropertyChanged
 
         try
         {
+            string nomeCadastrado = Nome.Trim();
+
             await _visitanteService.Cadastrar(new Visitante
             {
-                Nome = Nome.Trim(),
+                Nome = nomeCadastrado,
                 Telefone = Telefone.Trim()
             });
-
-            Visitante visitante = new Visitante
-            {
-                Nome = Nome.Trim(),
-                Telefone = Telefone.Trim()
-            };
-
-            string nomeCadastrado = visitante.Nome;
 
             Nome = string.Empty;
             Telefone = string.Empty;
 
-            await Shell.Current.DisplayAlert("Sucesso", "Visitante cadastrado com sucesso!", "OK");
+            await Shell.Current.DisplayAlert(
+                "Sucesso",
+                $"Visitante {nomeCadastrado} cadastrado com sucesso!",
+                "OK");
         }
         catch (Exception)
         {

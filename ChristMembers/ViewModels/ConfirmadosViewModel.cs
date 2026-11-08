@@ -16,6 +16,10 @@ public class ItemConfirmado
     public string TextoPessoas { get; init; } = string.Empty;
 
     public string Tipo { get; init; } = string.Empty;
+
+    public string TextoAcompanhantes { get; init; } = string.Empty;
+
+    public bool TemAcompanhantes => !string.IsNullOrEmpty(TextoAcompanhantes);
 }
 
 public class ConfirmadosViewModel : INotifyPropertyChanged
@@ -63,27 +67,49 @@ public class ConfirmadosViewModel : INotifyPropertyChanged
         try
         {
             List<ConfirmacaoPresenca> lista = await _confirmacoes.ListarDaNovidadeAsync(_novidade.Id);
+            List<ConfirmacaoAcompanhante> acompanhantes = await _confirmacoes.ListarTodosAcompanhantesAsync();
+
+            HashSet<long> ids = lista.Select(c => c.Id).ToHashSet();
+
+            Dictionary<long, List<string>> nomesPorConfirmacao = acompanhantes
+                .Where(a => ids.Contains(a.IdConfirmacao))
+                .GroupBy(a => a.IdConfirmacao)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(a => a.Id).Select(a => a.Nome).ToList());
 
             Itens.Clear();
 
             foreach (ConfirmacaoPresenca c in lista)
             {
+                nomesPorConfirmacao.TryGetValue(c.Id, out List<string>? nomes);
+                nomes ??= new List<string>();
+
+                int pessoas = 1 + nomes.Count;
+
+                string textoAcompanhantes = nomes.Count == 0
+                    ? string.Empty
+                    : (nomes.Count == 1 ? "Acompanhante: " : "Acompanhantes: ")
+                      + string.Join(", ", nomes);
+
                 Itens.Add(new ItemConfirmado
                 {
                     Nome = c.Nome,
                     Telefone = FormatarTelefone(c.Telefone),
-                    TextoPessoas = c.Pessoas == 1 ? "1 pessoa" : $"{c.Pessoas} pessoas",
-                    Tipo = c.EhMembro ? "Membro" : "Visitante"
+                    TextoPessoas = pessoas == 1 ? "1 pessoa" : $"{pessoas} pessoas",
+                    Tipo = c.EhMembro ? "Membro" : "Visitante",
+                    TextoAcompanhantes = textoAcompanhantes
                 });
             }
 
-            int pessoas = lista.Sum(c => c.Pessoas);
+            int totalAcompanhantes = nomesPorConfirmacao.Values.Sum(v => v.Count);
+            int totalPessoas = lista.Count + totalAcompanhantes;
             int membros = lista.Count(c => c.EhMembro);
             int visitantes = lista.Count - membros;
 
             Resumo = lista.Count == 0
                 ? "Ninguém confirmou ainda."
-                : $"{lista.Count} confirmação(ões) · {pessoas} pessoa(s) · {membros} membro(s) · {visitantes} visitante(s)";
+                : $"{totalPessoas} pessoa(s) · {lista.Count} confirmação(ões) · {totalAcompanhantes} acompanhante(s) · {membros} membro(s) · {visitantes} visitante(s)";
         }
         catch (Exception)
         {
