@@ -73,6 +73,10 @@ public partial class CriarContaPage : ContentPage
 
             Aviso.Text = resultado.Mensagem;
             Aviso.IsVisible = true;
+
+            await _auth.SairAsync();
+            await Shell.Current.DisplayAlert("Sucesso", $"{resultado.Mensagem}", "OK");
+            await Shell.Current.GoToAsync("..");
         }
         catch (Exception)
         {
